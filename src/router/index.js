@@ -1,11 +1,16 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import HomeView from '../views/HomeView.vue'
 import LoginView from "../views/Telas/LoginView.vue";
+import IncialEmpresaView from "../views/Telas/InicialEmpresaView.vue";
 
 Vue.use(VueRouter)
 
 const routes = [
+  {
+    path: '/inicial',
+    name: 'inicial',
+    component: IncialEmpresaView
+  },
   {
     path: '/',
     name: 'login',

@@ -1,6 +1,6 @@
 <template>
     <v-app>
-        <v-main class="login">
+        <v-main class="background">
             <login-component/>
         </v-main>
     </v-app>
@@ -17,7 +17,7 @@ export default {
 </script>
 
 <style>
-    .login {
+    .background {
         background-color: #0D47A1;
     }
 </style>

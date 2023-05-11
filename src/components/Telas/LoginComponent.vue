@@ -80,11 +80,15 @@
 </template>
 
 <script>
+
+import LoadComponent from '../Fields/LoadComponent.vue';
+
 export default {
+  components: { LoadComponent },
     name: "LoginComponent",
     data: () => ({
-        login: null,
-        senha: null,
+        senha: "",
+        usuario: "",
         loader: false,
         required: [
             v => !!v || 'Campo Obrigatório'
@@ -96,8 +100,11 @@ export default {
             if (!this.$refs.form.validate())
                 return
 
-                this.loader = !this.loader;
-            ('Teste')
+            this.loader = true;
+            // Alert('Teste')
+            this.loader = false;
+
+            this.$router.push({ path: '/inicial', name: 'inicial'})
         }
     }
 }
