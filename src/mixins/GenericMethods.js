@@ -18,5 +18,13 @@ export default {
                 this.alerta = false
             }, 3500)
         },
+
+        RetornoErro(error) {
+            debugger
+            let retorno = error.response == undefined || error.response.status == 401 ? error.message : error.response.data
+
+            this.EnableAlert(retorno, "error")
+            console.log(error)
+        },
     },
 }
