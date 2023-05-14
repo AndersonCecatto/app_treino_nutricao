@@ -6,6 +6,13 @@ export default {
         loader: false,
         dialog: false,
         search: '',
+        sortBy: 'Id',
+        sortDesc: true,
+        flagAutoComplete: false,
+        dados: null,
+        required: {
+            required: value => !!value || 'Campo Obrigatório.',
+        },
     }),
 
     methods: {
@@ -17,6 +24,14 @@ export default {
             setTimeout(() => {
                 this.alerta = false
             }, 3500)
+        },
+
+        RetornaSimNao(item) {
+            return item ? "Sim" : "Não"
+        },
+
+        RetornaTrueFalse(item) {
+            return item == 'Sim'
         },
 
         RetornoErro(error) {

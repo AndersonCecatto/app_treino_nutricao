@@ -18,5 +18,7 @@ export default {
 }
 </script>
 <style scoped>
-  
+  .v-overlay {
+    z-index: 99999 !important;
+  }
 </style>

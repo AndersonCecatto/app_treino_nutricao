@@ -82,6 +82,8 @@
   
       <v-main>
         <anamnese-component v-if="AnamneseComponent"/>
+        <list-treino-component v-if="ListTreinoComponent"/>
+        <list-projeto-component/>
       </v-main>
       <load-component :Ativo="loader"/>
     </v-app>
@@ -90,19 +92,24 @@
 <script>
 import LoadComponent from '../Fields/LoadComponent.vue'
 import AnamneseComponent from './AnamneseComponent.vue';
+import ListProjetoComponent from './ListProjetoComponent.vue';
+import ListTreinoComponent from './ListTreinoComponent.vue';
 export default {
-  components: { LoadComponent, AnamneseComponent },
+  components: { LoadComponent, AnamneseComponent, ListTreinoComponent, ListProjetoComponent },
     name: "InicialEmpresaComponent",
     data: () => ({
         AnamneseComponent: false,
+        ListTreinoComponent: false,
 
         drawer: null,
         list: null,
         loader: false,
         menus: [
-            { Id: 1, title: 'Home', icon: 'mdi-home' },
-            { Id: 2, title: 'Histórico', icon: 'mdi-history' },
-            { Id: 3, title: 'Anamnese', icon: 'mdi-history' },
+            { Id: 1, title: 'Resultados', icon: 'mdi-home' },
+            { Id: 2, title: 'Projeto', icon: 'mdi-history' },
+            { Id: 3, title: 'Treino', icon: 'mdi-history' },
+            { Id: 4, title: 'Nutrição', icon: 'mdi-history' },
+            { Id: 5, title: 'Anamnese', icon: 'mdi-history' },
         ],
         countNotificacoes: 7,
         items: [
@@ -117,12 +124,15 @@ export default {
         AcessarLink(item){
             this.DesabilitarComponentes()
 
-            if (item.Id == 3)
+            if (item.Id == 5)
                 this.AnamneseComponent = true;
+            else if (item.Id == 3)
+                this.ListTreinoComponent = true;
         },
 
         DesabilitarComponentes() {
             this.AnamneseComponent = false
+            this.ListTreinoComponent = false
         },
 
         Sair() {
