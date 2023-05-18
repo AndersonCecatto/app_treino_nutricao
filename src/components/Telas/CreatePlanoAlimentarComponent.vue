@@ -2,13 +2,13 @@
     <div>
         <alert-component :texto-alerta="textoAlerta" :tipo='tipoAlerta' v-if="alerta == true"/>
         <load-component :Ativo="loader"/>
-        <dialog-persistent-component 
+        <dialog-persistent-component
           tamanho="600"
-          titulo="Cadastrar Treino"
+          titulo="Cadastrar Plano Alimentar"
           @close="close"
           :dialog="localDialog"
         >
-          <template v-slot:text>
+            <template v-slot:text>
               <v-form
                   ref="form"
                   lazy-validation
@@ -47,8 +47,8 @@
                     :flagAutoComplete="flagAutoComplete"
                   />
               </v-form>
-          </template>
-          <template v-slot:actions>
+            </template>
+            <template v-slot:actions>
               <v-spacer/>
               <v-btn
                   outlined
@@ -68,15 +68,14 @@
 
 <script>
 import GenericMethods from '@/mixins/GenericMethods'
+import AlertComponent from '../Fields/AlertComponent.vue'
+import AutoCompleteFieldComponent from '../Fields/AutoCompleteFieldComponent.vue'
 import DialogPersistentComponent from '../Fields/DialogPersistentComponent.vue'
 import LoadComponent from '../Fields/LoadComponent.vue'
 import RequestMethods from '@/mixins/RequestMethods'
-import AlertComponent from '../Fields/AlertComponent.vue'
-import AutoCompleteFieldComponent from '../Fields/AutoCompleteFieldComponent.vue'
-
 export default {
-    components: { DialogPersistentComponent, LoadComponent, AlertComponent, AutoCompleteFieldComponent },
-    name: 'CreateTreinoComponent',
+  components: { AlertComponent, LoadComponent, DialogPersistentComponent, AutoCompleteFieldComponent },
+    name: 'CreatePlanoAlimentarComponent',
     mixins: [GenericMethods, RequestMethods],
     data: () => ({
         localDialog: false,
@@ -85,7 +84,6 @@ export default {
         UsuarioId: null,
         Ativo: true
     }),
-
     methods: {
         close() {
             this.localDialog = !this.localDialog
@@ -109,8 +107,7 @@ export default {
             
             this.loader = !this.loader;
             
-            
-            this.RequestPost('Treino',
+            this.RequestPost('PlanoAlimentar',
             {
                 ativo: this.Ativo,
                 descricao: this.Descricao,
@@ -120,8 +117,8 @@ export default {
             },
             (retorno) => {
                 this.localDialog = !this.localDialog
-                this.EnableAlert("Treino salvo com sucesso.", "success")
-                this.$emit("TreinoSalvo", true)
+                this.EnableAlert("Plano Alimentar salvo com sucesso.", "success")
+                this.$emit("PlanoAlimentarSalvo", true)
             }, 
             (error) => this.RetornoErro(error),
             () => (this.loader = !this.loader))
@@ -130,7 +127,7 @@ export default {
         Alterar() {
             this.loader = !this.loader;
             
-            this.RequestPut('Treino',
+            this.RequestPut('PlanoAlimentar',
             {
                 id: this.dados.Id,
                 ativo: this.Ativo,
@@ -140,8 +137,8 @@ export default {
             },
             (retorno) => {
                 this.localDialog = !this.localDialog
-                this.EnableAlert("Treino salvo com sucesso.", "success")
-                this.$emit("TreinoSalvo", true)
+                this.EnableAlert("Plano Alimentar salvo com sucesso.", "success")
+                this.$emit("PlanoAlimentarSalvo", true)
             }, 
             (error) => this.RetornoErro(error),
             () => (this.loader = !this.loader))
@@ -162,7 +159,7 @@ export default {
             }
         }
     },
-    
+
     props: {
         dialog: Boolean,
         dados: Object,
@@ -172,5 +169,5 @@ export default {
 </script>
 
 <style>
-  
+
 </style>

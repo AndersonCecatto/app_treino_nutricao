@@ -4,7 +4,7 @@
     <load-component :Ativo="loader"/>
     <dialog-persistent-component
         tamanho="850"
-        titulo="Alunos"
+        titulo="Alunos Adicionados"
         @close="close"
         :dialog="localDialog"
     >
@@ -12,37 +12,21 @@
             <v-expansion-panels>
                 <v-expansion-panel
                 >
-                <v-expansion-panel-header>Cadastrar Aluno</v-expansion-panel-header>
+                <v-expansion-panel-header>Adicionar Aluno</v-expansion-panel-header>
                 <v-expansion-panel-content>
                     <v-form
                         ref="form"
                         lazy-validation
                     >
-                        <v-select
-                            v-model="Usuarios"
-                            :items="ListUsuarios"
-                            label="Alunos"
-                            prepend-icon="mdi-account-multiple-plus"
-                            multiple
-                            chips
-                        ></v-select>
-                        <v-select
-                            v-model="Treinos"
-                            :items="ListTreinos"
-                            label="Treinos"
-                            prepend-icon="mdi-account-multiple-plus"
-                            multiple
-                            chips
-                        ></v-select>
-                        <v-select
-                            v-model="PlanosAlimentares"
-                            :items="ListPlanosAlimentares"
-                            label="Planos Alimentares"
-                            prepend-icon="mdi-account-multiple-plus"
-                            multiple
-                            chips
-                        ></v-select>
-                        <v-row class="my-1 mr-1">
+                        <auto-complete-field-component
+                            Label="Aluno" 
+                            Icon="mdi-account-circle"
+                            Url="Usuario/GetByEmpresaId/2/TipoBusca/2"
+                            @retorno="retornoUsuario"
+                            :receberDados="null"
+                            :flagAutoComplete="true"
+                        />
+                        <v-row class="my-1 pr-3">
                             <v-spacer/>
                             <v-btn
                                 outlined
@@ -63,7 +47,7 @@
             
             <v-data-table
                 :headers="headers"
-                :items="treinos"
+                :items="alunos"
                 :search="search"
                 :footer-props="{
                     'items-per-page-text':'Linhas por pagina',
@@ -75,6 +59,25 @@
                 :sort-desc.sync="sortDesc"
                 :sort-by.sync="sortBy"
             >
+                <template v-slot:item.Ativo="{ item }">
+                    <v-chip
+                        :color="item.Ativo == 'Sim' ? 'green' : 'red'"
+                        dark
+                    >
+                        {{ item.Ativo }}
+                    </v-chip>
+                    <!-- <td class="font-weight-black" :style="MudarCor(item.Ativo)" >{{ item.Ativo }}</td> -->
+                </template>
+                <template v-slot:item.actions="{ item }">
+                    <v-icon
+                        color="error"
+                        class="mr-3"
+                        large
+                        @click="Deletar(item)"
+                    >
+                        mdi-delete-circle
+                    </v-icon>
+                </template>
             </v-data-table>
         </template>
         <template v-slot:actions>
@@ -89,9 +92,10 @@ import AlertComponent from '../Fields/AlertComponent.vue'
 import LoadComponent from '../Fields/LoadComponent.vue'
 import RequestMethods from '@/mixins/RequestMethods'
 import DialogPersistentComponent from '../Fields/DialogPersistentComponent.vue'
+import AutoCompleteFieldComponent from '../Fields/AutoCompleteFieldComponent.vue'
 
 export default {
-    components: { AlertComponent, LoadComponent, DialogPersistentComponent },
+    components: { AlertComponent, LoadComponent, DialogPersistentComponent, AutoCompleteFieldComponent },
     name: 'CreateAdicionarUsuarioComponent',
     mixins: [GenericMethods, RequestMethods],
     data: () => ({
@@ -99,19 +103,12 @@ export default {
         UsuarioId: null,
         headers: [
             { text: '', value: 'Id', align: ' d-none'},
-            { text: 'Nome', value: 'Descricao'},
-            { text: 'Ativo', value: 'Ativo', },
-            { text: 'Ações', value: 'actions', align: 'right', sortable: false },
+            { text: 'Código', value: 'IdAluno', width: '100px'},
+            { text: 'Nome', value: 'Nome', width: '65%'},
+            { text: 'Ativo', value: 'Ativo' },
+            { text: 'Ações', value: 'actions', align: 'center', sortable: false },
         ],
-
-        ListUsuarios: [],
-        ListTreinos: [],
-        ListPlanosAlimentares: [],
-
-        Usuarios: [],
-        Treinos: [],
-        PlanosAlimentares: []
-
+        alunos: []
     }),
 
     methods: {
@@ -123,110 +120,85 @@ export default {
             this.UsuarioId = retorno?.id
         },
 
-        BuscarUsuarios() {
-            this.loader = !this.loader;
-            
-            this.RequestGet('Usuario/GetByEmpresaId/'+2, 
-            (retorno) => {
-                this.ListUsuarios = []
-                retorno.data.forEach(element => {
-                    this.ListUsuarios.push(
-                        element.id + ' - ' + element.nome
-                    )
-                });
-            }, 
-            (error) => this.RetornoErro(error),
-            () => (this.loader = !this.loader))
-        },
+        VerificarUsuarioLista() {
 
-        BuscarTreinos() {
-            this.loader = !this.loader;
-            
-            this.RequestGet('Treino/EmpresaId/'+2, 
-            (retorno) => {
-                this.ListTreinos = []
-                retorno.data.forEach(element => {
-                    this.ListTreinos.push(
-                        element.id + ' - ' + element.descricao
-                    )
-                });
-            }, 
-            (error) => this.RetornoErro(error),
-            () => (this.loader = !this.loader))
-        },
-
-        BuscarPlanosAlimentares() {
-            this.loader = !this.loader;
-            
-            this.RequestGet('PlanoAlimentar/EmpresaId/'+2, 
-            (retorno) => {
-                this.ListPlanosAlimentares = []
-                retorno.data.forEach(element => {
-                    this.ListPlanosAlimentares.push(
-                        element.id + ' - ' + element.descricao
-                    )
-                });
-            }, 
-            (error) => this.RetornoErro(error),
-            () => (this.loader = !this.loader))
+            if(this.UsuarioId == null) {
+                this.EnableAlert("Selecione um usuario.", "warning")
+                return true
+            }
+            else if(this.alunos.some((x) => x.IdAluno == this.UsuarioId)) {
+                this.EnableAlert("Aluno já adicionado na lista.", "warning")
+                return true
+            }
         },
 
         Salvar() {
+            if (this.VerificarUsuarioLista())
+                return
+
             this.loader = !this.loader;
             
-            debugger
+            this.RequestPost('ProjetoAluno',
+            {
+                usuarioId: this.UsuarioId,
+                projetoId: this.dados.Id
+            },
+            (retorno) => {
+                this.EnableAlert("Aluno salvo com sucesso.", "success")
+            }, 
+            (error) => this.RetornoErro(error),
+            () => {
+                this.loader = !this.loader
+                this.BuscarProjetos()
+            })
+        },
 
-            var teste = []
+        Deletar(item) {
+            this.loader = !this.loader;
+            
+            this.RequestDelete('ProjetoAluno/'+item.Id,
+            (retorno) => {
+                this.EnableAlert("Aluno excluido com sucesso.", "success")
+            }, 
+            (error) => this.RetornoErro(error),
+            () => {
+                this.loader = !this.loader
+                this.BuscarProjetos()
+            })
+        },
 
-            this.Usuarios.forEach(element => {
-                
-            });
-
-            var teste1 = this.Usuarios
-            var teste2 = this.Treinos
-            var t3 = this.PlanosAlimentares
-        
-
-            // this.RequestPost('Projeto/ProjetoAluno',
-            // {
-            //     ativo: this.Ativo,
-            //     nome: this.Descricao,
-            //     planoAlimentar: this.PlanoAlimentar,
-            //     treino: this.Treino,
-            //     foto: this.Fotos,
-            //     avaliacao: this.Avaliacao,
-            //     exame: this.Exames,
-            //     anamnese: this.Anamnese,
-            //     observacoes: this.Observacao,
-            //     empresaId: 2
-            // },
-            // (retorno) => {
-            //     this.localDialog = !this.localDialog
-            //     this.EnableAlert("Projeto salvo com sucesso.", "success")
-            //     this.$emit("ProjetoSalvo", true)
-            // }, 
-            // (error) => this.RetornoErro(error),
-            // () => (this.loader = !this.loader))
-        }
+        BuscarProjetos() {
+            this.loader = !this.loader;
+            
+            this.RequestGet('ProjetoAluno/'+this.dados.Id,
+            (retorno) => {
+                this.alunos = []
+                retorno.data.forEach(element => {
+                    this.alunos.push({
+                        Id: element.id,
+                        IdAluno: element.usuarioId,
+                        Nome: element.usuario.nome,
+                        Ativo: this.RetornaSimNao(element.usuario.ativo)
+                    })
+                });
+            }, 
+            (error) => this.RetornoErro(error),
+            () => (this.loader = !this.loader))
+        },
     },
 
     watch: {
         dialog() {
-            debugger
             this.localDialog = true
+
+            if(this.dados != null)
+                this.BuscarProjetos()
         }
-    },
-
-    created() {
-        debugger
-
-        this.BuscarUsuarios()
-        this.BuscarTreinos()
-        this.BuscarPlanosAlimentares()
     },
 
     props: {
         dialog: Boolean,
+        dados: Object
     }
 }
 </script>

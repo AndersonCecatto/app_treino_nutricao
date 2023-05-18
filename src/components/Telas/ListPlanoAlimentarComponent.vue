@@ -1,14 +1,14 @@
 <template>
-  <div>
-    <alert-component :texto-alerta="textoAlerta" :tipo='tipoAlerta' v-if="alerta == true"/>
-    <load-component :Ativo="loader"/>
-    <card-padrao-component>
-        <template v-slot:titulo>
+    <div>
+        <alert-component :texto-alerta="textoAlerta" :tipo='tipoAlerta' v-if="alerta == true"/>
+        <load-component :Ativo="loader"/>
+        <card-padrao-component>
+            <template v-slot:titulo>
             <div>
                 <v-icon class="mx-3">
-                    mdi-dumbbell
+                    mdi-silverware-fork-knife
                 </v-icon>
-                Treinos
+                Planos Alimentares
             </div>
             <v-spacer/>
             <v-text-field
@@ -25,7 +25,7 @@
                 large
                 right
                 color="primary"
-                @click="CriarTreino()"
+                @click="CriarPlanoAlimentar()"
                 >
                 Novo
             </v-btn>
@@ -33,7 +33,7 @@
         <template v-slot:texto>
             <v-data-table
                 :headers="headers"
-                :items="treinos"
+                :items="planosAlimentares"
                 :search="search"
                 :footer-props="{
                     'items-per-page-text':'Linhas por pagina',
@@ -56,35 +56,33 @@
                         color="primary"
                         class="mr-3"
                         large
-                        @click="EditarTreino(item)"
+                        @click="EditarPlanoALimentar(item)"
                     >
                         mdi-text-box-edit
                     </v-icon>
                 </template>
             </v-data-table>
         </template>
-    </card-padrao-component>
-    <create-treino-component
-        :dialog="dialog"
-        :dados="dados"
-        @TreinoSalvo="TreinoSalvo"
-        :flagAutoComplete="flagAutoComplete"
-    />
-  </div>
+        </card-padrao-component>
+        <create-plano-alimentar-component
+            :dialog="dialog"
+            :dados="dados"
+            @PlanoAlimentarSalvo="PlanoAlimentarSalvo"
+            :flagAutoComplete="flagAutoComplete"
+        />
+    </div>
 </template>
 
 <script>
-
 import GenericMethods from '@/mixins/GenericMethods'
 import AlertComponent from '../Fields/AlertComponent.vue'
 import CardPadraoComponent from '../Fields/CardPadraoComponent.vue'
-import RequestMethods from '@/mixins/RequestMethods'
 import LoadComponent from '../Fields/LoadComponent.vue'
-import CreateTreinoComponent from './CreateTreinoComponent.vue'
-
+import RequestMethods from '@/mixins/RequestMethods'
+import CreatePlanoAlimentarComponent from './CreatePlanoAlimentarComponent.vue'
 export default {
-    components: { AlertComponent, CardPadraoComponent, LoadComponent, CreateTreinoComponent },
-    name: 'ListTreinoComponent',
+  components: { AlertComponent, LoadComponent, CardPadraoComponent, CreatePlanoAlimentarComponent },
+    name: 'ListPlanoAlimentarComponent',
     mixins: [GenericMethods, RequestMethods],
     data: () => ({
         headers: [
@@ -94,18 +92,18 @@ export default {
             { text: 'Ativo', value: 'Ativo', },
             { text: 'Ações', value: 'actions', align: 'right', sortable: false },
         ],
-        treinos: []
+        planosAlimentares: []
     }),
 
     methods: {
-        BuscarTreinos() {
+        BuscarPlanosAlimentares() {
             this.loader = !this.loader;
             
-            this.RequestGet('Treino/EmpresaId/'+2,
+            this.RequestGet('PlanoAlimentar/EmpresaId/'+2,
             (retorno) => {
-                this.treinos = []
+                this.planosAlimentares = []
                 retorno.data.forEach(element => {
-                    this.treinos.push({
+                    this.planosAlimentares.push({
                         Id: element.id,
                         Descricao: element.descricao,
                         Usuario: element.usuario,
@@ -117,26 +115,26 @@ export default {
             () => (this.loader = !this.loader))
         },
 
-        CriarTreino() {
+        CriarPlanoAlimentar() {
             this.dados = null
             this.flagAutoComplete = !this.flagAutoComplete
             this.dialog = !this.dialog
         },
 
-        EditarTreino(item) {
+        EditarPlanoALimentar(item) {
             this.dados = item
             this.dialog = !this.dialog
         },
 
-        TreinoSalvo(retorno) {
+        PlanoAlimentarSalvo(retorno) {
             if (retorno == true)
-                this.BuscarTreinos()
+                this.BuscarPlanosAlimentares()
         }
     },
 
     created() {
-        this.BuscarTreinos();
-    }
+        this.BuscarPlanosAlimentares();
+    },
 }
 </script>
 

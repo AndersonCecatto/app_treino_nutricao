@@ -80,7 +80,6 @@ export default {
       },
         
       flagAutoComplete(val) {
-        debugger
         this.entries = []
         this.model = null
         if (this.receberDados != null) {
@@ -91,7 +90,6 @@ export default {
     },
 
     created() {
-        debugger
         if (this.receberDados != null) {
           this.entries = [this.receberDados]
           this.model = this.receberDados

@@ -48,23 +48,11 @@
                 <template v-slot:item.Descricao="{ item }">
                     <td class="font-weight-black">{{ item.Descricao }}</td>
                 </template>
-                <template v-slot:item.PlanoAlimentar="{ item }">
-                    <td class="font-weight-black" :style="MudarCor(item.PlanoAlimentar)" >{{ item.PlanoAlimentar }}</td>
+                <template v-slot:item.PlanosAlimentaresListar="{ item }">
+                    <td class="font-weight-black">{{ item.PlanosAlimentaresListar }}</td>
                 </template>
-                <template v-slot:item.Treino="{ item }">
-                    <td class="font-weight-black" :style="MudarCor(item.Treino)" >{{ item.Treino }}</td>
-                </template>
-                <template v-slot:item.Fotos="{ item }">
-                    <td class="font-weight-black" :style="MudarCor(item.Fotos)" >{{ item.Fotos }}</td>
-                </template>
-                <template v-slot:item.Avaliacao="{ item }">
-                    <td class="font-weight-black" :style="MudarCor(item.Avaliacao)" >{{ item.Avaliacao }}</td>
-                </template>
-                <template v-slot:item.Exames="{ item }">
-                    <td class="font-weight-black" :style="MudarCor(item.Exames)" >{{ item.Exames }}</td>
-                </template>
-                <template v-slot:item.Anamnese="{ item }">
-                    <td class="font-weight-black" :style="MudarCor(item.Anamnese)" >{{ item.Anamnese }}</td>
+                <template v-slot:item.TreinosListar="{ item }">
+                    <td class="font-weight-black">{{ item.TreinosListar }}</td>
                 </template>
                 <template v-slot:item.Ativo="{ item }">
                     <td class="font-weight-black" :style="MudarCor(item.Ativo)" >{{ item.Ativo }}</td>
@@ -94,6 +82,7 @@
         :dialog="dialog"
         :dados="dados"
         @ProjetoSalvo="ProjetoSalvo"
+        :flagAutoComplete="flagAutoComplete"
     />
     <create-adicionar-usuario-component
         :dialog="dialogAdicionarAluno"
@@ -118,18 +107,18 @@ export default {
     data: () => ({
         dialogAdicionarAluno: false,
         headers: [
+            { text: 'Descrição', value: 'Descricao'},
+            { text: 'Planos Alimentares', value: 'PlanosAlimentares', align: ' d-none'},
+            { text: 'Planos Alimentares', value: 'PlanosAlimentaresListar'},
+            { text: 'Treinos', value: 'TreinosListar'},
+            { text: 'Treinos', value: 'Treinos', align: ' d-none'},
+            { text: 'Exames', value: 'ExamesListar'},
+            { text: 'Ativo', value: 'Ativo' },
+            { text: 'Ações', value: 'actions', align: 'right', sortable: false },
             { text: '', value: 'Id', align: ' d-none'},
             { text: '', value: 'EmpresaId', align: ' d-none'},
             { text: '', value: 'Observacoes', align: ' d-none'},
-            { text: 'Descrição', value: 'Descricao'},
-            { text: 'Plano Alimentar', value: 'PlanoAlimentar'},
-            { text: 'Treino', value: 'Treino'},
-            { text: 'Fotos', value: 'Fotos'},
-            { text: 'Avaliação', value: 'Avaliacao'},
-            { text: 'Exames', value: 'Exames'},
-            { text: 'Anamnese', value: 'Anamnese'},
-            { text: 'Ativo', value: 'Ativo', },
-            { text: 'Ações', value: 'actions', align: 'right', sortable: false },
+            { text: '', value: 'Exames', align: ' d-none'},
         ],
         projetos: []
     }),
@@ -142,17 +131,33 @@ export default {
             (retorno) => {
                 this.projetos = []
                 retorno.data.forEach(element => {
+                    debugger
+                    var treinosListar = element.treinos != null ? 
+                                        element.treinos.split(';').length > 1 ? 
+                                        element.treinos.split(';').length + ' Selecionados': 
+                                        element.treinos : ''
+
+                    var planoALimentarListar = element.planosAlimentares != null ? 
+                                               element.planosAlimentares.split(';').length > 1 ? 
+                                               element.planosAlimentares.split(';').length + ' Selecionados': 
+                                               element.planosAlimentares : ''
+
+                    var examesListar = element.exames != null ? 
+                                element.exames.split(';').length > 1 ? 
+                                element.exames.split(';').length + ' Selecionados': 
+                                element.exames : ''
+
                     this.projetos.push({
                         Id: element.id,
                         Descricao: element.nome,
                         Observacoes: element.observacoes,
                         EmpresaId: element.empresaId,
-                        PlanoAlimentar: this.RetornaSimNao(element.planoAlimentar),
-                        Treino: this.RetornaSimNao(element.treino),
-                        Fotos: this.RetornaSimNao(element.foto),
-                        Avaliacao: this.RetornaSimNao(element.avaliacao),
-                        Exames: this.RetornaSimNao(element.exame),
-                        Anamnese: this.RetornaSimNao(element.anamnese),
+                        PlanosAlimentares: element.planosAlimentares,
+                        Treinos: element.treinos,
+                        Exames: element.exames,
+                        PlanosAlimentaresListar: planoALimentarListar,
+                        TreinosListar: treinosListar,
+                        ExamesListar: examesListar,
                         Ativo: this.RetornaSimNao(element.ativo)
                     })
                 });
@@ -163,6 +168,7 @@ export default {
 
         CriarProjeto() {
             this.dados = null
+            this.flagAutoComplete = !this.flagAutoComplete
             this.dialog = !this.dialog
         },
 
@@ -172,7 +178,7 @@ export default {
         },
 
         AdicionarAlunos(item) {
-            debugger
+            this.dados = item
             this.dialogAdicionarAluno = !this.dialogAdicionarAluno
         },
 
@@ -180,9 +186,9 @@ export default {
             return item == "Sim" ? 'color: green;' : 'color: red;'
         },
 
-        ProjetoSalvo(retorno) {
-            if (retorno == true)
-                this.BuscarProjetos()
+        ProjetoSalvo() {
+            debugger
+            this.BuscarProjetos()
         }
     },
 

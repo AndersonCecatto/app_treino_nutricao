@@ -41,5 +41,9 @@ export default {
             this.EnableAlert(retorno, "error")
             console.log(error)
         },
+
+        MudarCor(item) {
+            return item == "Sim" ? 'color: green;' : 'color: red;'
+        },
     },
 }

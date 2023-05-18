@@ -755,7 +755,6 @@ export default {
         if (retorno == "")
           return
 
-          debugger
         this.Id = retorno.id,
         this.Nome= retorno.nome,
         //this.DataNascimento  = retorno. ,
@@ -804,7 +803,7 @@ export default {
       },
 
       Salvar() {
-        debugger
+        
         if (this.Id != null){
           this.Alterar()
           return

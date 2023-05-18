@@ -83,7 +83,8 @@
       <v-main>
         <anamnese-component v-if="AnamneseComponent"/>
         <list-treino-component v-if="ListTreinoComponent"/>
-        <list-projeto-component/>
+        <list-projeto-component v-if="ListProjetoComponent"/>
+        <list-plano-alimentar-component v-if="ListPlanoAlimentarComponent"/>
       </v-main>
       <load-component :Ativo="loader"/>
     </v-app>
@@ -92,24 +93,32 @@
 <script>
 import LoadComponent from '../Fields/LoadComponent.vue'
 import AnamneseComponent from './AnamneseComponent.vue';
+import ListPlanoAlimentarComponent from './ListPlanoAlimentarComponent.vue';
 import ListProjetoComponent from './ListProjetoComponent.vue';
 import ListTreinoComponent from './ListTreinoComponent.vue';
 export default {
-  components: { LoadComponent, AnamneseComponent, ListTreinoComponent, ListProjetoComponent },
+  components: { LoadComponent, AnamneseComponent, ListTreinoComponent, ListProjetoComponent, ListPlanoAlimentarComponent },
     name: "InicialEmpresaComponent",
     data: () => ({
         AnamneseComponent: false,
         ListTreinoComponent: false,
+        ListProjetoComponent: false,
+        ListPlanoAlimentarComponent: false,
 
         drawer: null,
         list: null,
         loader: false,
         menus: [
-            { Id: 1, title: 'Resultados', icon: 'mdi-home' },
-            { Id: 2, title: 'Projeto', icon: 'mdi-history' },
-            { Id: 3, title: 'Treino', icon: 'mdi-history' },
-            { Id: 4, title: 'Nutrição', icon: 'mdi-history' },
-            { Id: 5, title: 'Anamnese', icon: 'mdi-history' },
+            { Id: 1, title: 'Resultados', icon: 'mdi-medal' },
+            { Id: 2, title: 'Projeto', icon: 'mdi-weight-lifter' },
+            { Id: 3, title: 'Treino', icon: 'mdi-dumbbell' },
+            { Id: 4, title: 'Exercicios', icon: 'mdi-run' },
+            { Id: 5, title: 'Plano Alimentar', icon: 'mdi-silverware-fork-knife' },
+            { Id: 5, title: 'Alimentos', icon: 'mdi-food-apple' },
+            { Id: 6, title: 'Avaliações', icon: 'mdi-account-check' },
+            { Id: 7, title: 'Exames', icon: 'mdi-pill-multiple' },
+            { Id: 8, title: 'Usuarios', icon: 'mdi-account-group' },
+            { Id: 9, title: 'Anamnese', icon: 'mdi-account-details' },
         ],
         countNotificacoes: 7,
         items: [
@@ -124,15 +133,21 @@ export default {
         AcessarLink(item){
             this.DesabilitarComponentes()
 
-            if (item.Id == 5)
-                this.AnamneseComponent = true;
+            if (item.Id == 2)
+                this.ListProjetoComponent = true;
+            else if (item.Id == 5)
+                this.ListPlanoAlimentarComponent = true;
             else if (item.Id == 3)
                 this.ListTreinoComponent = true;
+            else if (item.Id == 9)
+                this.AnamneseComponent = true;
         },
 
         DesabilitarComponentes() {
             this.AnamneseComponent = false
             this.ListTreinoComponent = false
+            this.ListProjetoComponent = false
+            this.ListPlanoAlimentarComponent = false
         },
 
         Sair() {

@@ -44,70 +44,25 @@
                     />
                     <v-banner
                         outlined
+                        class="mb-3"
                     >
-                    <v-subheader>Incluir no Projeto</v-subheader>
-                    <v-row>
-                        <v-col 
-                            cols="6"
-                            md="4"
-                        >
-                            <v-checkbox
-                            class="pl-3"
-                            v-model="PlanoAlimentar"
-                            label="Plano Alimentar"
-                            ></v-checkbox>
-                        </v-col>
-                        <v-col 
-                            cols="6"
-                            md="4"
-                        >
-                            <v-checkbox
-                            class="pl-3"
-                            v-model="Treino"
-                            label="Treino"
-                            ></v-checkbox>
-                        </v-col>
-                        <v-col 
-                            cols="6"
-                            md="4"
-                        >
-                            <v-checkbox
-                            class="pl-3"
-                            v-model="Fotos"
-                            label="Fotos"
-                            ></v-checkbox>
-                        </v-col>
-                        <v-col 
-                            cols="6"
-                            md="4"
-                        >
-                            <v-checkbox
-                            class="pl-3"
-                            v-model="Avaliacao"
-                            label="Avaliação"
-                            ></v-checkbox>
-                        </v-col>
-                        <v-col 
-                            cols="6"
-                            md="4"
-                        >
-                            <v-checkbox
-                            class="pl-3"
-                            v-model="Exames"
-                            label="Exames"
-                            ></v-checkbox>
-                        </v-col>
-                        <v-col 
-                            cols="6"
-                            md="4"
-                        >
-                            <v-checkbox
-                            class="pl-3"
-                            v-model="Anamnese"
-                            label="Anamnese"
-                            ></v-checkbox>
-                        </v-col>
-                    </v-row>
+                        <v-subheader>Adicionar</v-subheader>
+                        <v-select
+                            v-model="PlanosAlimentares"
+                            :items="ListPlanosAlimentares"
+                            label="Planos Alimentares"
+                            prepend-icon="mdi-account-multiple-plus"
+                            multiple
+                            chips
+                        ></v-select>
+                        <v-select
+                            v-model="Treinos"
+                            :items="ListTreinos"
+                            label="Treinos"
+                            prepend-icon="mdi-account-multiple-plus"
+                            multiple
+                            chips
+                        ></v-select>
                     </v-banner>
                 </v-form>
               <v-divider/>
@@ -153,9 +108,13 @@ export default {
         Treino: false,
         Fotos: false,
         Avaliacao: false,
-        Exames: false,
+        Exame: false,
         Anamnese: false,
-        EmpresaId: null
+        EmpresaId: null,
+
+        Treinos: [],
+        PlanosAlimentares: [],
+        ListTreinos: []
     }),
 
     methods: {
@@ -174,7 +133,6 @@ export default {
         },
 
         Inserir() {
-            debugger
             this.loader = !this.loader;
             
             this.RequestPost('Projeto',
@@ -185,10 +143,12 @@ export default {
                 treino: this.Treino,
                 foto: this.Fotos,
                 avaliacao: this.Avaliacao,
-                exame: this.Exames,
+                exame: this.Exame,
                 anamnese: this.Anamnese,
                 observacoes: this.Observacao,
-                empresaId: 2
+                empresaId: 2,
+                planosAlimentares: this.PlanosAlimentares.length > 1 ? this.PlanosAlimentares.toString().replaceAll(',', ';') : null,
+                treinos: this.Treinos.length > 1 ? this.Treinos.toString().replaceAll(',', ';') : null
             },
             (retorno) => {
                 this.localDialog = !this.localDialog
@@ -200,10 +160,12 @@ export default {
         },
 
         Alterar() {
-            debugger
             this.loader = !this.loader;
-            
             debugger
+
+            this.PlanosAlimentares = this.PlanosAlimentares.toString() == '' ? null : this.PlanosAlimentares
+            this.Treinos = this.Treinos.toString() == '' ? null : this.Treinos
+
             this.RequestPut('Projeto',
             {
                 id: this.Id,
@@ -213,10 +175,12 @@ export default {
                 treino: this.Treino,
                 foto: this.Fotos,
                 avaliacao: this.Avaliacao,
-                exame: this.Exames,
+                exame: this.Exame,
                 anamnese: this.Anamnese,
                 observacoes: this.Observacao,
-                empresaId: this.EmpresaId
+                empresaId: this.EmpresaId,
+                planosAlimentares: this.PlanosAlimentares != null ? this.PlanosAlimentares.toString().replaceAll(',', ';') : null,
+                treinos: this.Treinos != null ? this.Treinos.toString().replaceAll(',', ';') : null
             },
             (retorno) => {
                 this.localDialog = !this.localDialog
@@ -225,7 +189,39 @@ export default {
             }, 
             (error) => this.RetornoErro(error),
             () => (this.loader = !this.loader))
-        }
+        },
+
+        BuscarTreinos() {
+            this.loader = !this.loader;
+            
+            this.RequestGet('Treino/EmpresaId/'+2, 
+            (retorno) => {
+                this.ListTreinos = []
+                retorno.data.forEach(element => {
+                    this.ListTreinos.push(
+                        element.id + ' - ' + element.descricao
+                    )
+                });
+            }, 
+            (error) => this.RetornoErro(error),
+            () => (this.loader = !this.loader))
+        },
+
+        BuscarPlanosAlimentares() {
+            this.loader = !this.loader;
+            
+            this.RequestGet('PlanoAlimentar/EmpresaId/'+2, 
+            (retorno) => {
+                this.ListPlanosAlimentares = []
+                retorno.data.forEach(element => {
+                    this.ListPlanosAlimentares.push(
+                        element.id + ' - ' + element.descricao
+                    )
+                });
+            }, 
+            (error) => this.RetornoErro(error),
+            () => (this.loader = !this.loader))
+        },
     },
 
     watch: {
@@ -239,9 +235,12 @@ export default {
             this.Treino = false
             this.Fotos = false
             this.Avaliacao = false
-            this.Exames = false
+            this.Exame = false
             this.Anamnese = false
             this.EmpresaId = null
+
+            this.Treinos = []
+            this.PlanosAlimentares = []
 
             if (this.dados != null) {
                 debugger
@@ -253,11 +252,18 @@ export default {
                 this.Treino = this.RetornaTrueFalse(this.dados.Treino)
                 this.Fotos = this.RetornaTrueFalse(this.dados.Fotos)
                 this.Avaliacao = this.RetornaTrueFalse(this.dados.Avaliacao)
-                this.Exames = this.RetornaTrueFalse(this.dados.Exames)
+                this.Exame = this.RetornaTrueFalse(this.dados.Exame)
                 this.Anamnese = this.RetornaTrueFalse(this.dados.Anamnese)
-                this.EmpresaId = this.dados.EmpresaId
+                this.EmpresaId = this.dados.EmpresaId,
+                this.PlanosAlimentares = this.dados.PlanosAlimentares != null ? this.dados.PlanosAlimentares.split(';') : null
+                this.Treinos = this.dados.Treinos != null ? this.dados.Treinos.split(';') : null
             }
         }
+    },
+
+    created() {
+        this.BuscarTreinos()
+        this.BuscarPlanosAlimentares()
     },
 
     props: {
