@@ -135,17 +135,17 @@ export default {
                     var treinosListar = element.treinos != null ? 
                                         element.treinos.split(';').length > 1 ? 
                                         element.treinos.split(';').length + ' Selecionados': 
-                                        element.treinos : ''
+                                        element.treinos : null
 
                     var planoALimentarListar = element.planosAlimentares != null ? 
                                                element.planosAlimentares.split(';').length > 1 ? 
                                                element.planosAlimentares.split(';').length + ' Selecionados': 
-                                               element.planosAlimentares : ''
+                                               element.planosAlimentares : null
 
                     var examesListar = element.exames != null ? 
                                 element.exames.split(';').length > 1 ? 
                                 element.exames.split(';').length + ' Selecionados': 
-                                element.exames : ''
+                                element.exames : null
 
                     this.projetos.push({
                         Id: element.id,

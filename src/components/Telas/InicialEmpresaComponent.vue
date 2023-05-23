@@ -25,6 +25,7 @@
                         <v-list-item-content>
                             <v-list-item-title>{{ item.title }}</v-list-item-title>
                         </v-list-item-content>
+                        
                     </v-list-item>
                 </v-list-item-group>
             </v-list>
@@ -85,6 +86,8 @@
         <list-treino-component v-if="ListTreinoComponent"/>
         <list-projeto-component v-if="ListProjetoComponent"/>
         <list-plano-alimentar-component v-if="ListPlanoAlimentarComponent"/>
+        <list-alimentos-component v-if="ListAlimentosComponent"/>
+        <list-exercicios-component/>
       </v-main>
       <load-component :Ativo="loader"/>
     </v-app>
@@ -93,17 +96,20 @@
 <script>
 import LoadComponent from '../Fields/LoadComponent.vue'
 import AnamneseComponent from './AnamneseComponent.vue';
+import ListAlimentosComponent from './ListAlimentosComponent.vue';
+import ListExerciciosComponent from './ListExerciciosComponent.vue';
 import ListPlanoAlimentarComponent from './ListPlanoAlimentarComponent.vue';
 import ListProjetoComponent from './ListProjetoComponent.vue';
 import ListTreinoComponent from './ListTreinoComponent.vue';
 export default {
-  components: { LoadComponent, AnamneseComponent, ListTreinoComponent, ListProjetoComponent, ListPlanoAlimentarComponent },
+  components: { LoadComponent, AnamneseComponent, ListTreinoComponent, ListProjetoComponent, ListPlanoAlimentarComponent, ListAlimentosComponent, ListExerciciosComponent },
     name: "InicialEmpresaComponent",
     data: () => ({
         AnamneseComponent: false,
         ListTreinoComponent: false,
         ListProjetoComponent: false,
         ListPlanoAlimentarComponent: false,
+        ListAlimentosComponent: false,
 
         drawer: null,
         list: null,
@@ -114,11 +120,11 @@ export default {
             { Id: 3, title: 'Treino', icon: 'mdi-dumbbell' },
             { Id: 4, title: 'Exercicios', icon: 'mdi-run' },
             { Id: 5, title: 'Plano Alimentar', icon: 'mdi-silverware-fork-knife' },
-            { Id: 5, title: 'Alimentos', icon: 'mdi-food-apple' },
-            { Id: 6, title: 'Avaliações', icon: 'mdi-account-check' },
-            { Id: 7, title: 'Exames', icon: 'mdi-pill-multiple' },
-            { Id: 8, title: 'Usuarios', icon: 'mdi-account-group' },
-            { Id: 9, title: 'Anamnese', icon: 'mdi-account-details' },
+            { Id: 6, title: 'Alimentos', icon: 'mdi-food-apple' },
+            { Id: 7, title: 'Avaliações', icon: 'mdi-account-check' },
+            { Id: 8, title: 'Exames', icon: 'mdi-pill-multiple' },
+            { Id: 9, title: 'Usuarios', icon: 'mdi-account-group' },
+            { Id: 10, title: 'Anamnese', icon: 'mdi-account-details' },
         ],
         countNotificacoes: 7,
         items: [
@@ -135,11 +141,13 @@ export default {
 
             if (item.Id == 2)
                 this.ListProjetoComponent = true;
-            else if (item.Id == 5)
-                this.ListPlanoAlimentarComponent = true;
             else if (item.Id == 3)
                 this.ListTreinoComponent = true;
-            else if (item.Id == 9)
+            else if (item.Id == 5)
+                this.ListPlanoAlimentarComponent = true;
+            else if (item.Id == 6)
+                this.ListAlimentosComponent = true
+            else if (item.Id == 10)
                 this.AnamneseComponent = true;
         },
 
@@ -148,6 +156,7 @@ export default {
             this.ListTreinoComponent = false
             this.ListProjetoComponent = false
             this.ListPlanoAlimentarComponent = false
+            this.ListAlimentosComponent = false
         },
 
         Sair() {

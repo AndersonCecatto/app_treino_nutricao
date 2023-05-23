@@ -46,6 +46,25 @@
                     :receberDados="dados?.Usuario"
                     :flagAutoComplete="flagAutoComplete"
                   />
+                  <v-textarea
+                        v-model="Observacoes"
+                        label="Observações"
+                        prepend-icon="mdi-text-box-edit"
+                    />
+                  <v-banner
+                    outlined
+                    class="mb-3"
+                  >
+                    <v-subheader>Adicionar</v-subheader>
+                    <v-select
+                        v-model="Alimentos"
+                        :items="ListAlimentos"
+                        label="Alimentos"
+                        prepend-icon="mdi-food-apple"
+                        multiple
+                        chips
+                    ></v-select>
+                  </v-banner>
               </v-form>
             </template>
             <template v-slot:actions>
@@ -82,7 +101,11 @@ export default {
         Id: null,
         Descricao: null,
         UsuarioId: null,
-        Ativo: true
+        Ativo: true,
+        Alimentos: null,
+        Observacoes: null,
+
+        ListAlimentos: []
     }),
     methods: {
         close() {
@@ -111,7 +134,9 @@ export default {
             {
                 ativo: this.Ativo,
                 descricao: this.Descricao,
+                observacoes: this.Observacoes,
                 usuarioId: this.UsuarioId,
+                alimentos: this.Alimentos.length > 1 ? this.Alimentos.toString().replaceAll(',', ';') : null,
                 ativo: this.Ativo,
                 empresaId: 2
             },
@@ -127,10 +152,14 @@ export default {
         Alterar() {
             this.loader = !this.loader;
             
+            this.Alimentos = this.Alimentos.toString() == '' ? null : this.Alimentos
+
             this.RequestPut('PlanoAlimentar',
             {
                 id: this.dados.Id,
                 ativo: this.Ativo,
+                observacoes: this.Observacoes,
+                alimentos: this.Alimentos != null ? this.Alimentos.toString().replaceAll(',', ';') : null,
                 descricao: this.Descricao,
                 usuarioId: this.UsuarioId,
                 empresaId: 2
@@ -142,7 +171,23 @@ export default {
             }, 
             (error) => this.RetornoErro(error),
             () => (this.loader = !this.loader))
-        }
+        },
+
+        BuscarAlimentos() {
+            this.loader = !this.loader;
+            
+            this.RequestGet('Alimento/EmpresaId/'+2+'/TipoBusca/2', 
+            (retorno) => {
+                this.ListAlimentos = []
+                retorno.data.forEach(element => {
+                    this.ListAlimentos.push(
+                        element.id + ' - ' + element.nome
+                    )
+                });
+            }, 
+            (error) => this.RetornoErro(error),
+            () => (this.loader = !this.loader))
+        },
     },
 
     watch: {
@@ -151,11 +196,18 @@ export default {
             this.localDialog = true
             this.Descricao = null
             this.Id = null
+            this.observacoes = null
+            this.Alimentos = null
+            this.ListAlimentos = []
+
+            this.BuscarAlimentos()
 
             if (this.dados != null) {
                 this.Id = this.dados.Id
                 this.Descricao = this.dados.Descricao
+                this.Observacoes = this.dados.Observacoes
                 this.Ativo = this.RetornaTrueFalse(this.dados.Ativo)
+                this.Alimentos = this.dados.Alimentos != null ? this.dados.Alimentos.split(';') : null
             }
         }
     },

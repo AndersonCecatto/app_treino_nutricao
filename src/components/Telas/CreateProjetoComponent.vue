@@ -51,7 +51,7 @@
                             v-model="PlanosAlimentares"
                             :items="ListPlanosAlimentares"
                             label="Planos Alimentares"
-                            prepend-icon="mdi-account-multiple-plus"
+                            prepend-icon="mdi-silverware-fork-knife"
                             multiple
                             chips
                         ></v-select>
@@ -59,7 +59,7 @@
                             v-model="Treinos"
                             :items="ListTreinos"
                             label="Treinos"
-                            prepend-icon="mdi-account-multiple-plus"
+                            prepend-icon="mdi-dumbbell"
                             multiple
                             chips
                         ></v-select>

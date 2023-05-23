@@ -1,14 +1,14 @@
 <template>
-    <div>
-        <alert-component :texto-alerta="textoAlerta" :tipo='tipoAlerta' v-if="alerta == true"/>
-        <load-component :Ativo="loader"/>
-        <card-padrao-component>
-            <template v-slot:titulo>
+  <div>
+    <alert-component :texto-alerta="textoAlerta" :tipo='tipoAlerta' v-if="alerta == true"/>
+    <load-component :Ativo="loader"/>
+    <card-padrao-component>
+        <template v-slot:titulo>
             <div>
                 <v-icon class="mx-3">
-                    mdi-silverware-fork-knife
+                    mdi-run
                 </v-icon>
-                Planos Alimentares
+                Exercicios
             </div>
             <v-spacer/>
             <v-text-field
@@ -25,7 +25,7 @@
                 large
                 right
                 color="primary"
-                @click="CriarPlanoAlimentar()"
+                @click="CriarExercicio()"
                 >
                 Novo
             </v-btn>
@@ -33,7 +33,7 @@
         <template v-slot:texto>
             <v-data-table
                 :headers="headers"
-                :items="planosAlimentares"
+                :items="exercicios"
                 :search="search"
                 :footer-props="{
                     'items-per-page-text':'Linhas por pagina',
@@ -48,8 +48,17 @@
                 <template v-slot:item.Descricao="{ item }">
                     <td class="font-weight-black">{{ item.Descricao }}</td>
                 </template>
-                <template v-slot:item.ListAlimentos="{ item }">
-                    <td class="font-weight-black">{{ item.ListAlimentos }}</td>
+                <template v-slot:item.Serie="{ item }">
+                    <td class="font-weight-black">{{ item.Serie }}</td>
+                </template>
+                <template v-slot:item.TempoDescanso="{ item }">
+                    <td class="font-weight-black">{{ item.TempoDescanso }}</td>
+                </template>
+                <template v-slot:item.Repeticoes="{ item }">
+                    <td class="font-weight-black">{{ item.Repeticoes }}</td>
+                </template>
+                <template v-slot:item.Tecnica="{ item }">
+                    <td class="font-weight-black">{{ item.Tecnica }}</td>
                 </template>
                 <template v-slot:item.Ativo="{ item }">
                     <td class="font-weight-black" :style="MudarCor(item.Ativo)" >{{ item.Ativo }}</td>
@@ -59,21 +68,20 @@
                         color="primary"
                         class="mr-3"
                         large
-                        @click="EditarPlanoALimentar(item)"
+                        @click="EditarExercicio(item)"
                     >
                         mdi-text-box-edit
                     </v-icon>
                 </template>
             </v-data-table>
         </template>
-        </card-padrao-component>
-        <create-plano-alimentar-component
-            :dialog="dialog"
-            :dados="dados"
-            @PlanoAlimentarSalvo="PlanoAlimentarSalvo"
-            :flagAutoComplete="flagAutoComplete"
-        />
-    </div>
+    </card-padrao-component>
+    <create-exercicio-component
+        :dialog="dialog"
+        :dados="dados"
+        @ExercicioSalvo="ExercicioSalvo"
+    />
+  </div>
 </template>
 
 <script>
@@ -82,44 +90,42 @@ import AlertComponent from '../Fields/AlertComponent.vue'
 import CardPadraoComponent from '../Fields/CardPadraoComponent.vue'
 import LoadComponent from '../Fields/LoadComponent.vue'
 import RequestMethods from '@/mixins/RequestMethods'
-import CreatePlanoAlimentarComponent from './CreatePlanoAlimentarComponent.vue'
+import CreateExercicioComponent from './CreateExercicioComponent.vue'
 export default {
-  components: { AlertComponent, LoadComponent, CardPadraoComponent, CreatePlanoAlimentarComponent },
-    name: 'ListPlanoAlimentarComponent',
+    components: { AlertComponent, LoadComponent, CardPadraoComponent, CreateExercicioComponent },
+    name: 'ListExerciciosComponent',
     mixins: [GenericMethods, RequestMethods],
     data: () => ({
         headers: [
             { text: '', value: 'Id', align: ' d-none'},
-            { text: '', value: 'Usuario', align: ' d-none'},
-            { text: '', value: 'Alimentos', align: ' d-none'},
+            { text: '', value: 'EmpresaId', align: ' d-none'},
             { text: 'Descrição', value: 'Descricao'},
-            { text: 'Alimentos', value: 'ListAlimentos'},
+            { text: 'Série', value: 'Serie'},
+            { text: 'Tempo Descanso', value: 'TempoDescanso'},
+            { text: 'Repetições', value: 'Repeticoes'},
+            { text: 'Tecnica', value: 'Tecnica'},
             { text: 'Ativo', value: 'Ativo', },
             { text: 'Ações', value: 'actions', align: 'right', sortable: false },
         ],
-        planosAlimentares: []
+        exercicios: []
     }),
 
     methods: {
-        BuscarPlanosAlimentares() {
+        BuscarExercicios() {
             this.loader = !this.loader;
             
-            this.RequestGet('PlanoAlimentar/EmpresaId/'+2,
+            this.RequestGet('Exercicio/EmpresaId/'+2+'/TipoBusca/1',
             (retorno) => {
-                this.planosAlimentares = []
+                this.exercicios = []
                 retorno.data.forEach(element => {
-                    var listAlimentos = element.alimentos != null ? 
-                                element.alimentos.split(';').length > 1 ? 
-                                element.alimentos.split(';').length + ' Selecionados': 
-                                element.alimentos : null
-
-                    this.planosAlimentares.push({
+                    this.exercicios.push({
                         Id: element.id,
                         Descricao: element.descricao,
-                        Observacoes: element.observacoes,
-                        Alimentos: element.alimentos,
-                        ListAlimentos: listAlimentos,
-                        Usuario: element.usuario,
+                        Serie: element.serie,
+                        TempoDescanso: element.tempoDescanso,
+                        Repeticoes: element.repeticoes,
+                        Tecnica: element.tecnica,
+                        EmpresaId: element.empresaId,
                         Ativo: this.RetornaSimNao(element.ativo)
                     })
                 });
@@ -128,26 +134,24 @@ export default {
             () => (this.loader = !this.loader))
         },
 
-        CriarPlanoAlimentar() {
+        EditarExercicio() {
+
+        },
+
+        CriarExercicio() {
             this.dados = null
-            this.flagAutoComplete = !this.flagAutoComplete
             this.dialog = !this.dialog
         },
 
-        EditarPlanoALimentar(item) {
-            this.dados = item
-            this.dialog = !this.dialog
-        },
-
-        PlanoAlimentarSalvo(retorno) {
+        ExercicioSalvo(retorno) {
             if (retorno == true)
-                this.BuscarPlanosAlimentares()
-        }
+                this.BuscarExercicios()
+        },
     },
 
     created() {
-        this.BuscarPlanosAlimentares();
-    },
+        this.BuscarExercicios()
+    }
 }
 </script>
 
