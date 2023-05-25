@@ -146,11 +146,11 @@ export default {
                 case 1:
                     return 'ML'
                 case 2:
-                    return 'Mg'
+                    return 'MG'
                 case 3:
                     return 'G'
                 case 4:
-                    return 'Kg'
+                    return 'KG'
                 case 5:
                     return 'Unidade'
                 case 6:

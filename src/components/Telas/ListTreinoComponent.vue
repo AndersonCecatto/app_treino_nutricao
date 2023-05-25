@@ -48,6 +48,12 @@
                 <template v-slot:item.Descricao="{ item }">
                     <td class="font-weight-black">{{ item.Descricao }}</td>
                 </template>
+                <template v-slot:item.ListGrupoMuscular="{ item }">
+                    <td class="font-weight-black">{{ item.ListGrupoMuscular }}</td>
+                </template>
+                <template v-slot:item.ListExercicios="{ item }">
+                    <td class="font-weight-black">{{ item.ListExercicios }}</td>
+                </template>
                 <template v-slot:item.Ativo="{ item }">
                     <td class="font-weight-black" :style="MudarCor(item.Ativo)" >{{ item.Ativo }}</td>
                 </template>
@@ -90,7 +96,12 @@ export default {
         headers: [
             { text: '', value: 'Id', align: ' d-none'},
             { text: '', value: 'Usuario', align: ' d-none'},
-            { text: 'Descrição', value: 'Descricao',  width: '100%'},
+            { text: '', value: 'GrupoMuscular', align: ' d-none'},
+            { text: '', value: 'Exercicios', align: ' d-none'},
+            { text: '', value: 'Observacoes', align: ' d-none'},
+            { text: 'Descrição', value: 'Descricao'},
+            { text: 'Grupo Muscular', value: 'ListGrupoMuscular'},
+            { text: 'Exercicios', value: 'ListExercicios'},
             { text: 'Ativo', value: 'Ativo', },
             { text: 'Ações', value: 'actions', align: 'right', sortable: false },
         ],
@@ -105,9 +116,26 @@ export default {
             (retorno) => {
                 this.treinos = []
                 retorno.data.forEach(element => {
+                    var listGrupoMuscular = element.grupoMuscular != null ? 
+                                            element.grupoMuscular.split(';').length > 1 ? 
+                                            element.grupoMuscular.split(';').length + ' Selecionados': 
+                                            element.grupoMuscular : null
+
+                    var listExercicios = element.exercicios != null ? 
+                                        element.exercicios.split(';').length > 1 ? 
+                                        element.exercicios.split(';').length + ' Selecionados': 
+                                        element.exercicios : null
+
+
                     this.treinos.push({
                         Id: element.id,
                         Descricao: element.descricao,
+                        GrupoMuscular: listGrupoMuscular,
+                        ListGrupoMuscular: listGrupoMuscular,
+                        GrupoMuscular: element.grupoMuscular,
+                        ListExercicios: listExercicios,
+                        Exercicios: element.exercicios,
+                        Observacoes: element.observacoes,
                         Usuario: element.usuario,
                         Ativo: this.RetornaSimNao(element.ativo)
                     })
@@ -131,7 +159,7 @@ export default {
         TreinoSalvo(retorno) {
             if (retorno == true)
                 this.BuscarTreinos()
-        }
+        },
     },
 
     created() {

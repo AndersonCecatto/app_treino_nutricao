@@ -101,7 +101,8 @@ export default {
         Serie: null,
         TempoDescanso: null,
         Repeticoes: null,
-        Tecnica: null
+        Tecnica: null,
+        Ativo: true,
     }),
 
     methods: {
@@ -110,7 +111,13 @@ export default {
         },
 
         Salvar() {
-            this.Inserir()
+            if (!this.$refs.form.validate()) 
+                return 
+
+            if (this.dados == null)
+                this.Inserir()
+            else
+                this.Alterar()
         },
 
         Inserir() {
@@ -120,7 +127,29 @@ export default {
             {
                 ativo: this.Ativo,
                 descricao: this.Descricao,
-                quantidade: this.Descricao,
+                serie: this.Serie,
+                tempoDescanso: this.TempoDescanso,
+                repeticoes: this.Repeticoes,
+                tecnica: this.Tecnica,
+                empresaId: 2
+            },
+            (retorno) => {
+                this.localDialog = !this.localDialog
+                this.EnableAlert("Exercicio salvo com sucesso.", "success")
+                this.$emit("ExercicioSalvo", true)
+            }, 
+            (error) => this.RetornoErro(error),
+            () => (this.loader = !this.loader))
+        },
+
+        Alterar() {
+            this.loader = !this.loader;
+
+            this.RequestPut('Exercicio',
+            {
+                id: this.dados.Id,
+                ativo: this.Ativo,
+                descricao: this.Descricao,
                 serie: this.Serie,
                 tempoDescanso: this.TempoDescanso,
                 repeticoes: this.Repeticoes,
@@ -140,6 +169,23 @@ export default {
     watch: {
         dialog() {
             this.localDialog = true
+
+            this.Id = null
+            this.Descricao = null
+            this.Serie = null
+            this.TempoDescanso = null
+            this.Repeticoes = null
+            this.Tecnica = null
+
+            if (this.dados != null) {
+                this.Id = this.dados.Id
+                this.Descricao = this.dados.Descricao
+                this.Serie = this.dados.Serie
+                this.TempoDescanso = this.dados.TempoDescanso
+                this.Repeticoes = this.dados.Repeticoes
+                this.Tecnica = this.dados.Tecnica
+                this.Ativo = this.RetornaTrueFalse(this.dados.Ativo)
+            }
         }
     },
 

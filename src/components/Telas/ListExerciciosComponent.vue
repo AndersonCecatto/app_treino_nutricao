@@ -134,8 +134,9 @@ export default {
             () => (this.loader = !this.loader))
         },
 
-        EditarExercicio() {
-
+        EditarExercicio(item) {
+            this.dados = item
+            this.dialog = !this.dialog
         },
 
         CriarExercicio() {

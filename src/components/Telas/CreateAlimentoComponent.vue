@@ -94,7 +94,7 @@ export default {
             '3 - G', 
             '4 - KG',
             '5 - Unidade',
-            '6 - Litros'
+            '6 - Litro'
         ],
         Medida: '1 - ML',
         Id: null,
@@ -173,8 +173,8 @@ export default {
                     return '4 - KG'
                 case 'Unidade':
                     return '5 - Unidade'
-                case 'Litros':
-                    return '6 - Litros'
+                case 'Litro':
+                    return '6 - Litro'
                 default:
                     return null
             }

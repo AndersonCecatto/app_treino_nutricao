@@ -31,21 +31,48 @@
                         ></v-switch>
                     </v-col>
                 </v-row>
-                  <v-text-field
-                      v-model="Descricao"
-                      label="Descrição"
-                      prepend-icon="mdi-text-box-edit"
-                      required
-                      :rules="[() => !!Descricao || 'Campo Obrigatório']"
-                  />
-                  <auto-complete-field-component
-                    Label="Aluno" 
-                    Icon="mdi-account-circle"
-                    Url="Usuario/GetByEmpresaId/2/TipoBusca/2"
-                    @retorno="retornoUsuario"
-                    :receberDados="dados?.Usuario"
-                    :flagAutoComplete="flagAutoComplete"
-                  />
+                    <v-text-field
+                        v-model="Descricao"
+                        label="Descrição"
+                        prepend-icon="mdi-text-box-edit"
+                        required
+                        :rules="[() => !!Descricao || 'Campo Obrigatório']"
+                    />
+                    <auto-complete-field-component
+                        Label="Aluno" 
+                        Icon="mdi-account-circle"
+                        Url="Usuario/GetByEmpresaId/2/TipoBusca/2"
+                        @retorno="retornoUsuario"
+                        :receberDados="dados?.Usuario"
+                        :flagAutoComplete="flagAutoComplete"
+                    />
+                    <v-textarea
+                        v-model="Observacoes"
+                        label="Observações"
+                        prepend-icon="mdi-text-box-edit"
+                    />
+                    <v-banner
+                        outlined
+                        class="mb-3"
+                    >
+                        <v-subheader>Adicionar</v-subheader>
+                        <v-select
+                            v-model="GrupoMuscular"
+                            :items="ListGrupoMuscular"
+                            label="Grupo Muscular"
+                            multiple
+                            chips
+                            prepend-icon="mdi-text-box-edit"
+                        ></v-select>
+                        <v-select
+                            v-model="Exercicios"
+                            :items="ListExercicio"
+                            label="Exercicios"
+                            multiple
+                            chips
+                            prepend-icon="mdi-text-box-edit"
+                        ></v-select>
+                    </v-banner>
               </v-form>
           </template>
           <template v-slot:actions>
@@ -83,7 +110,21 @@ export default {
         Id: null,
         Descricao: null,
         UsuarioId: null,
-        Ativo: true
+        Ativo: true,
+        Observacoes: null,
+
+        GrupoMuscular: null,
+        ListGrupoMuscular: [
+            '1 - Peito',
+            '2 - Costas',
+            '3 - Ombro',
+            '4 - Pernas',
+            '5 - Biceps',
+            '6 - Triceps'
+        ],
+
+        Exercicios: null,
+        ListExercicio: []
     }),
 
     methods: {
@@ -105,16 +146,17 @@ export default {
                 this.Alterar()
         },
 
-        Inserir() {
-            
-            this.loader = !this.loader;
-            
+        Inserir() {            
+            this.loader = !this.loader;            
             
             this.RequestPost('Treino',
             {
                 ativo: this.Ativo,
                 descricao: this.Descricao,
                 usuarioId: this.UsuarioId,
+                grupoMuscular: this.GrupoMuscular.length > 1 ? this.GrupoMuscular.toString().replaceAll(',', ';') : null,
+                exercicios: this.Exercicios.length > 1 ? this.Exercicios.toString().replaceAll(',', ';') : null,
+                observacoes: this.Observacoes,
                 ativo: this.Ativo,
                 empresaId: 2
             },
@@ -129,12 +171,18 @@ export default {
 
         Alterar() {
             this.loader = !this.loader;
+
+            this.GrupoMuscular = this.GrupoMuscular.toString() == '' ? null : this.GrupoMuscular
+            this.Exercicios = this.Exercicios.toString() == '' ? null : this.Exercicios
             
             this.RequestPut('Treino',
             {
                 id: this.dados.Id,
                 ativo: this.Ativo,
                 descricao: this.Descricao,
+                grupoMuscular: this.GrupoMuscular != null ? this.GrupoMuscular.toString().replaceAll(',', ';') : null,
+                exercicios: this.Exercicios != null ? this.Exercicios.toString().replaceAll(',', ';') : null,
+                observacoes: this.Observacoes,
                 usuarioId: this.UsuarioId,
                 empresaId: 2
             },
@@ -145,19 +193,45 @@ export default {
             }, 
             (error) => this.RetornoErro(error),
             () => (this.loader = !this.loader))
-        }
+        },
+
+        BuscarExercicios() {
+            this.loader = !this.loader;
+            
+            this.RequestGet('Exercicio/EmpresaId/'+2+'/TipoBusca/2', 
+            (retorno) => {
+                this.ListExercicio = []
+                retorno.data.forEach(element => {
+                    this.ListExercicio.push(
+                        element.id + ' - ' + element.descricao
+                    )
+                });
+            }, 
+            (error) => this.RetornoErro(error),
+            () => (this.loader = !this.loader))
+        },
     },
 
     watch: {
         dialog() {
             
+            this.Id = null
             this.localDialog = true
             this.Descricao = null
-            this.Id = null
+            this.Observacoes = null
+            this.GrupoMuscular = null
+            this.Exercicios = null
+
+            this.BuscarExercicios()
+
+            debugger
 
             if (this.dados != null) {
                 this.Id = this.dados.Id
                 this.Descricao = this.dados.Descricao
+                this.GrupoMuscular = this.dados.GrupoMuscular != null ? this.dados.GrupoMuscular.split(';') : null
+                this.Observacoes = this.dados.Observacoes
+                this.Exercicios = this.dados.Exercicios != null ? this.dados.Exercicios.split(';') : null 
                 this.Ativo = this.RetornaTrueFalse(this.dados.Ativo)
             }
         }

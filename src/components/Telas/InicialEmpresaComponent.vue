@@ -87,7 +87,7 @@
         <list-projeto-component v-if="ListProjetoComponent"/>
         <list-plano-alimentar-component v-if="ListPlanoAlimentarComponent"/>
         <list-alimentos-component v-if="ListAlimentosComponent"/>
-        <list-exercicios-component/>
+        <list-exercicios-component v-if="ListExerciciosComponent"/>
       </v-main>
       <load-component :Ativo="loader"/>
     </v-app>
@@ -102,7 +102,11 @@ import ListPlanoAlimentarComponent from './ListPlanoAlimentarComponent.vue';
 import ListProjetoComponent from './ListProjetoComponent.vue';
 import ListTreinoComponent from './ListTreinoComponent.vue';
 export default {
-  components: { LoadComponent, AnamneseComponent, ListTreinoComponent, ListProjetoComponent, ListPlanoAlimentarComponent, ListAlimentosComponent, ListExerciciosComponent },
+  components: { 
+    LoadComponent, AnamneseComponent, 
+    ListTreinoComponent, ListProjetoComponent, 
+    ListPlanoAlimentarComponent, ListAlimentosComponent, 
+    ListExerciciosComponent },
     name: "InicialEmpresaComponent",
     data: () => ({
         AnamneseComponent: false,
@@ -110,6 +114,7 @@ export default {
         ListProjetoComponent: false,
         ListPlanoAlimentarComponent: false,
         ListAlimentosComponent: false,
+        ListExerciciosComponent: false,
 
         drawer: null,
         list: null,
@@ -125,6 +130,7 @@ export default {
             { Id: 8, title: 'Exames', icon: 'mdi-pill-multiple' },
             { Id: 9, title: 'Usuarios', icon: 'mdi-account-group' },
             { Id: 10, title: 'Anamnese', icon: 'mdi-account-details' },
+            { Id: 11, title: 'Financeiro', icon: 'mdi-currency-usd' },
         ],
         countNotificacoes: 7,
         items: [
@@ -143,6 +149,8 @@ export default {
                 this.ListProjetoComponent = true;
             else if (item.Id == 3)
                 this.ListTreinoComponent = true;
+            else if (item.Id == 4)
+                this.ListExerciciosComponent = true
             else if (item.Id == 5)
                 this.ListPlanoAlimentarComponent = true;
             else if (item.Id == 6)
@@ -157,6 +165,7 @@ export default {
             this.ListProjetoComponent = false
             this.ListPlanoAlimentarComponent = false
             this.ListAlimentosComponent = false
+            this.ListExerciciosComponent = false
         },
 
         Sair() {
