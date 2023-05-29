@@ -33,7 +33,7 @@
           <v-btn
           text
           color="primary"
-          @click="$refs.dialog.save(dateFormatted)"
+          @click="$refs.dialog.save(dateFormatted); SalvarData(dateFormatted)"
           >
           Ok
           </v-btn>
@@ -54,19 +54,35 @@
         FormatDate(date) {
             if (!date) return null
 
+            if (date.includes('T'))
+                date = date.substr(0, date.indexOf('T'))
+
             const [year, month, day] = date.split('-')
             return `${day}/${month}/${year}`
+        },
+
+        SalvarData(dateFormatted) {
+            this.$emit('DataRetorno', this.dateFormatted)
         }
     },
 
     watch: {
         date (val) {
+            
             this.dateFormatted = this.FormatDate(this.date)
+        },
+
+        dataRecebimento(val) {
+            if (val == null)
+                return this.dateFormatted = this.FormatDate(this.date)
+
+            this.dateFormatted = this.FormatDate(val)
         },
     },
 
     props: {
-        titulo: String
+        titulo: String,
+        dataRecebimento: String
     }
   }
   </script>

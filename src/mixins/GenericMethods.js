@@ -5,6 +5,8 @@ export default {
         tipoAlerta: "",
         loader: false,
         dialog: false,
+        dialogSimNao: false,
+        retornoSimNao: false,
         search: '',
         sortBy: 'Id',
         sortDesc: true,
@@ -44,6 +46,16 @@ export default {
 
         MudarCor(item) {
             return item == "Sim" ? 'color: green;' : 'color: red;'
+        },
+
+        ParseDate (date) {
+            if (!date) return null
+
+            if (!date.includes('/'))
+                return date
+
+            const [day, month, year] = date.split('/')
+            return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
         },
     },
 }

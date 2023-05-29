@@ -88,6 +88,8 @@
         <list-plano-alimentar-component v-if="ListPlanoAlimentarComponent"/>
         <list-alimentos-component v-if="ListAlimentosComponent"/>
         <list-exercicios-component v-if="ListExerciciosComponent"/>
+        <list-avaliacao-usuario-component v-if="ListAvaliacaoUsuarioComponent" @UsuarioId="UsuarioId"/>
+        <list-avaliacao-component v-if="ListAvaliacaoComponent" :UsuarioId="LocalUsuarioId" :EmpresaId="2"/>
       </v-main>
       <load-component :Ativo="loader"/>
     </v-app>
@@ -97,6 +99,8 @@
 import LoadComponent from '../Fields/LoadComponent.vue'
 import AnamneseComponent from './AnamneseComponent.vue';
 import ListAlimentosComponent from './ListAlimentosComponent.vue';
+import ListAvaliacaoComponent from './ListAvaliacaoComponent.vue';
+import ListAvaliacaoUsuarioComponent from './ListAvaliacaoUsuarioComponent.vue';
 import ListExerciciosComponent from './ListExerciciosComponent.vue';
 import ListPlanoAlimentarComponent from './ListPlanoAlimentarComponent.vue';
 import ListProjetoComponent from './ListProjetoComponent.vue';
@@ -106,7 +110,9 @@ export default {
     LoadComponent, AnamneseComponent, 
     ListTreinoComponent, ListProjetoComponent, 
     ListPlanoAlimentarComponent, ListAlimentosComponent, 
-    ListExerciciosComponent },
+    ListExerciciosComponent,
+    ListAvaliacaoComponent,
+    ListAvaliacaoUsuarioComponent },
     name: "InicialEmpresaComponent",
     data: () => ({
         AnamneseComponent: false,
@@ -115,7 +121,10 @@ export default {
         ListPlanoAlimentarComponent: false,
         ListAlimentosComponent: false,
         ListExerciciosComponent: false,
+        ListAvaliacaoComponent: false,
+        ListAvaliacaoUsuarioComponent: false,
 
+        LocalUsuarioId: 0,
         drawer: null,
         list: null,
         loader: false,
@@ -155,6 +164,8 @@ export default {
                 this.ListPlanoAlimentarComponent = true;
             else if (item.Id == 6)
                 this.ListAlimentosComponent = true
+            else if (item.Id == 7)
+                this.ListAvaliacaoUsuarioComponent = true
             else if (item.Id == 10)
                 this.AnamneseComponent = true;
         },
@@ -166,6 +177,8 @@ export default {
             this.ListPlanoAlimentarComponent = false
             this.ListAlimentosComponent = false
             this.ListExerciciosComponent = false
+            this.ListAvaliacaoUsuarioComponent = false
+            this.ListAvaliacaoComponent = false
         },
 
         Sair() {
@@ -175,6 +188,13 @@ export default {
 
         AbriuNotificacao() {
             this.countNotificacoes = 0
+        },
+
+        UsuarioId(retorno) {
+            debugger
+            this.LocalUsuarioId = retorno
+            this.ListAvaliacaoUsuarioComponent = false
+            this.ListAvaliacaoComponent = true
         }
     },
 
