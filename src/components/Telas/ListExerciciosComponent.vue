@@ -31,6 +31,27 @@
             </v-btn>
         </template>
         <template v-slot:texto>
+            <!-- Inicio Filtros -->
+            <v-expansion-panels>
+                <v-expansion-panel>
+                    <v-expansion-panel-header>
+                        <b>Filtros</b>
+                    </v-expansion-panel-header>
+                    <v-expansion-panel-content>
+                        <v-row>
+                            <v-col cols="12" md="4">
+                                <v-select
+                                    v-model="Status"
+                                    :items="listStatus"
+                                    label="Status"
+                                    @change="LocalFiltroStatus"
+                                ></v-select>
+                            </v-col>
+                        </v-row>
+                    </v-expansion-panel-content>
+                </v-expansion-panel>
+            </v-expansion-panels>
+            <!-- Fim Filtros -->
             <v-data-table
                 :headers="headers"
                 :items="exercicios"
@@ -97,8 +118,8 @@ export default {
     mixins: [GenericMethods, RequestMethods],
     data: () => ({
         headers: [
-            { text: '', value: 'Id', align: ' d-none'},
             { text: '', value: 'EmpresaId', align: ' d-none'},
+            { text: 'Código', value: 'Id', align: 'center',  width: '10%'},
             { text: 'Descrição', value: 'Descricao'},
             { text: 'Série', value: 'Serie'},
             { text: 'Tempo Descanso', value: 'TempoDescanso'},
@@ -107,10 +128,15 @@ export default {
             { text: 'Ativo', value: 'Ativo', },
             { text: 'Ações', value: 'actions', align: 'right', sortable: false },
         ],
-        exercicios: []
+        exercicios: [],
+        todosExercicios: []
     }),
 
     methods: {
+        LocalFiltroStatus(item) {
+            this.exercicios = this.FiltrarStatus(item, this.todosExercicios)
+        },
+
         BuscarExercicios() {
             this.loader = !this.loader;
             
@@ -128,6 +154,9 @@ export default {
                         EmpresaId: element.empresaId,
                         Ativo: this.RetornaSimNao(element.ativo)
                     })
+
+                    this.todosExercicios = this.exercicios
+                    this.Status = 'Todos'
                 });
             }, 
             (error) => this.RetornoErro(error),

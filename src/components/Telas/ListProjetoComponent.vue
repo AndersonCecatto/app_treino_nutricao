@@ -31,6 +31,27 @@
             </v-btn>
         </template>
         <template v-slot:texto>
+            <!-- Inicio Filtros -->
+            <v-expansion-panels>
+                <v-expansion-panel>
+                    <v-expansion-panel-header>
+                        <b>Filtros</b>
+                    </v-expansion-panel-header>
+                    <v-expansion-panel-content>
+                        <v-row>
+                            <v-col cols="12" md="4">
+                                <v-select
+                                    v-model="Status"
+                                    :items="listStatus"
+                                    label="Status"
+                                    @change="LocalFiltroStatus"
+                                ></v-select>
+                            </v-col>
+                        </v-row>
+                    </v-expansion-panel-content>
+                </v-expansion-panel>
+            </v-expansion-panels>
+            <!-- Fim Filtros -->
             <v-data-table
                 :headers="headers"
                 :items="projetos"
@@ -120,10 +141,15 @@ export default {
             { text: '', value: 'Observacoes', align: ' d-none'},
             { text: '', value: 'Exames', align: ' d-none'},
         ],
-        projetos: []
+        projetos: [],
+        todosProjetos: []
     }),
 
     methods: {
+        LocalFiltroStatus(item) {
+            this.projetos = this.FiltrarStatus(item, this.todosProjetos)
+        },
+    
         BuscarProjetos() {
             this.loader = !this.loader;
             
@@ -160,6 +186,9 @@ export default {
                         ExamesListar: examesListar,
                         Ativo: this.RetornaSimNao(element.ativo)
                     })
+
+                    this.todosProjetos = this.projetos
+                    this.Status = 'Todos'
                 });
             }, 
             (error) => this.RetornoErro(error),

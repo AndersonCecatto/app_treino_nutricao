@@ -6,9 +6,9 @@
             <template v-slot:titulo>
                 <div>
                     <v-icon class="mx-3">
-                        mdi-food-apple
+                        mdi-account-group
                     </v-icon>
-                    Alimentos
+                    Usuarios
                 </div>
                 <v-spacer/>
                 <v-text-field
@@ -25,12 +25,12 @@
                     large
                     right
                     color="primary"
-                    @click="CriarAlimentos()"
+                    @click="CriarUsuario()"
                     >
                     Novo
                 </v-btn>
             </template>
-        <template v-slot:texto>
+            <template v-slot:texto>
             <!-- Inicio Filtros -->
             <v-expansion-panels>
                 <v-expansion-panel>
@@ -54,7 +54,7 @@
             <!-- Fim Filtros -->
             <v-data-table
                 :headers="headers"
-                :items="alimentos"
+                :items="usuarios"
                 :search="search"
                 :footer-props="{
                     'items-per-page-text':'Linhas por pagina',
@@ -69,12 +69,6 @@
                 <template v-slot:item.Nome="{ item }">
                     <td class="font-weight-black">{{ item.Nome }}</td>
                 </template>
-                <template v-slot:item.Quantidade="{ item }">
-                    <td class="font-weight-black">{{ item.Quantidade }}</td>
-                </template>
-                <template v-slot:item.Medida="{ item }">
-                    <td class="font-weight-black">{{ item.Medida }}</td>
-                </template>
                 <template v-slot:item.Ativo="{ item }">
                     <td class="font-weight-black" :style="MudarCor(item.Ativo)" >{{ item.Ativo }}</td>
                 </template>
@@ -83,7 +77,7 @@
                         color="primary"
                         class="mr-3"
                         large
-                        @click="EditarAlimento(item)"
+                        @click="EditarUsuario(item)"
                     >
                         mdi-text-box-edit
                     </v-icon>
@@ -91,10 +85,10 @@
             </v-data-table>
         </template>
         </card-padrao-component>
-        <create-alimento-component
+        <create-usuario-component
             :dialog="dialog"
             :dados="dados"
-            @AlimentoSalvo="AlimentoSalvo"
+            @UsuarioSalvo="UsuarioSalvo"
         />
     </div>
 </template>
@@ -102,94 +96,77 @@
 <script>
 import GenericMethods from '@/mixins/GenericMethods'
 import AlertComponent from '../Fields/AlertComponent.vue'
+import CardPadraoComponent from '../Fields/CardPadraoComponent.vue'
 import LoadComponent from '../Fields/LoadComponent.vue'
 import RequestMethods from '@/mixins/RequestMethods'
-import CardPadraoComponent from '../Fields/CardPadraoComponent.vue'
-import CreateAlimentoComponent from './CreateAlimentoComponent.vue'
+import CreateUsuarioComponent from './CreateUsuarioComponent.vue'
 export default {
-    components: { AlertComponent, LoadComponent, CardPadraoComponent, CreateAlimentoComponent },
-    name: 'ListAlimentosComponent',
+    components: { AlertComponent, LoadComponent, CardPadraoComponent, CreateUsuarioComponent },
+    name: 'ListUsuarioComponent',
     mixins: [GenericMethods, RequestMethods],
     data: () => ({
         headers: [
             { text: '', value: 'EmpresaId', align: ' d-none'},
             { text: 'Código', value: 'Id', align: 'center', width: '10%'},
             { text: 'Nome', value: 'Nome'},
-            { text: 'Quantidade', value: 'Quantidade'},
-            { text: 'Medida', value: 'Medida'},
+            { text: 'Telefone', value: 'Telefone'},
+            { text: 'Data Nascimento', value: 'DataNascimento'},
+            { text: 'Email', value: 'Email'},
             { text: 'Ativo', value: 'Ativo', },
             { text: 'Ações', value: 'actions', align: 'right', sortable: false },
-            { text: '', value: 'Observacoes', align: ' d-none'},
         ],
-        alimentos: [],
-        todosAlimentos: []
+        usuarios: [],
+        todosUsuarios: []
     }),
 
     methods: {
         LocalFiltroStatus(item) {
-            this.alimentos = this.FiltrarStatus(item, this.todosAlimentos)
+            this.usuarios = this.FiltrarStatus(item, this.todosUsuarios)
         },
-        
-        BuscarAlimentos() {
+
+        BuscarUsuarios() {
             this.loader = !this.loader;
             
-            this.RequestGet('Alimento/EmpresaId/'+2+'/TipoBusca/1',
+            this.RequestGet('Usuario/GetByEmpresaId/2/TipoBusca/1',
             (retorno) => {
-                this.alimentos = []
+                this.usuarios = []
                 retorno.data.forEach(element => {
-                    this.alimentos.push({
+                    this.usuarios.push({
                         Id: element.id,
                         Nome: element.nome,
-                        Quantidade: element.quantidade,
-                        Medida: this.ConverterMedidas(element.medida),
-                        Observacoes: element.observacoes,
+                        Telefone: element.telefone,
+                        DataNascimento: this.FormatDate(element.dataNascimento),
+                        Email: element.email,
                         EmpresaId: element.empresaId,
                         Ativo: this.RetornaSimNao(element.ativo)
                     })
-
-                    this.todosAlimentos = this.alimentos
-                    this.Status = 'Todos'
                 });
+
+                this.todosUsuarios = this.usuarios
+                this.Status = 'Todos'
             }, 
             (error) => this.RetornoErro(error),
             () => (this.loader = !this.loader))
         },
 
-        CriarAlimentos() {
+        CriarUsuario() {
             this.dados = null
             this.dialog = !this.dialog
         },
 
-        EditarAlimento(item) {
-            this.dados = item
+        UsuarioSalvo(retorno) {
+            if (retorno == true)
+                this.BuscarUsuarios()
+        },
+
+        EditarUsuario(item) {
+            this.dados = item.Id
             this.dialog = !this.dialog
         },
-
-        AlimentoSalvo(retorno) {
-            if (retorno == true)
-                this.BuscarAlimentos()
-        },
-
-        ConverterMedidas(medida) {
-            switch (medida) {
-                case 1:
-                    return 'ML'
-                case 2:
-                    return 'MG'
-                case 3:
-                    return 'G'
-                case 4:
-                    return 'KG'
-                case 5:
-                    return 'Unidade'
-                case 6:
-                    return 'Litro'
-            }
-        }
     },
 
     created() {
-        this.BuscarAlimentos()
+        this.BuscarUsuarios()
     }
 }
 </script>

@@ -192,7 +192,7 @@ export default {
             this.Observacao = null
             
             if (this.dados != null) {
-                debugger
+                
                 this.Id = this.dados.Id
                 this.Nome = this.dados.Nome
                 this.Quantidade = this.dados.Quantidade

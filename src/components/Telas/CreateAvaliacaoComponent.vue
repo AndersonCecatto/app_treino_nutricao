@@ -46,11 +46,15 @@
                         <v-text-field
                             v-model="TreinoKcal"
                             label="Treino Kcal"
+                            type="number"
+                            pattern="\d*"
                             prepend-icon="mdi-text-box-edit"
                         />
                         <v-text-field
                             v-model="Cardio"
                             label="Cardio"
+                            type="number"
+                            pattern="\d*"
                             prepend-icon="mdi-text-box-edit"
                         />
                         <data-pickers-component @DataRetorno="DataRetorno" :data-recebimento="DataAvaliacaoRetorno"
@@ -64,62 +68,86 @@
 
                         <v-text-field
                             v-model="Peso"
+                            type="number"
+                            pattern="\d*"
                             label="Peso Kg"
                             prepend-icon="mdi-text-box-edit"
                         />
                         <v-text-field
                             v-model="MassaMuscular"
+                            type="number"
+                            pattern="\d*"
                             label="Massa Muscular"
                             prepend-icon="mdi-text-box-edit"
                         />
                         <v-text-field
                             v-model="IdadeCorporal"
                             label="Idade Corporal"
+                            type="number"
+                            pattern="\d*"
                             prepend-icon="mdi-text-box-edit"
                         />
                         <v-text-field
                             v-model="Imc"
                             label="IMC"
+                            type="number"
+                            pattern="\d*"
                             prepend-icon="mdi-text-box-edit"
                         />
                         <v-text-field
                             v-model="GorduraCorporal"
                             label="Gordura Corporal %"
+                            type="number"
+                            pattern="\d*"
                             prepend-icon="mdi-text-box-edit"
                         />
                         <v-text-field
                             v-model="GorduraVisceral"
                             label="Gordura Visceral"
+                            type="number"
+                            pattern="\d*"
                             prepend-icon="mdi-text-box-edit"
                         />
                         <v-text-field
                             v-model="MetabolismoBasal"
                             label="Metabolismo Basal"
+                            type="number"
+                            pattern="\d*"
                             prepend-icon="mdi-text-box-edit"
                         />
                         <v-text-field
                             v-model="Pernas"
                             label="Perna++"
+                            type="number"
+                            pattern="\d*"
                             prepend-icon="mdi-text-box-edit"
                         />
                         <v-text-field
                             v-model="KgMassaMagra"
                             label="Kg Massa Magra"
+                            type="number"
+                            pattern="\d*"
                             prepend-icon="mdi-text-box-edit"
                         />
                         <v-text-field
                             v-model="KgGordura"
                             label="Kg Gordura"
+                            type="number"
+                            pattern="\d*"
                             prepend-icon="mdi-text-box-edit"
                         />
                         <v-text-field
                             v-model="RelacaoAbdomemOmbro"
                             label="Relação Abdomem Ombro"
+                            type="number"
+                            pattern="\d*"
                             prepend-icon="mdi-text-box-edit"
                         />
                         <v-text-field
                             v-model="RelacaoAbdomemPeito"
                             label="Relação Abdomem Peito"
+                            type="number"
+                            pattern="\d*"
                             prepend-icon="mdi-text-box-edit"
                         />
                     </v-banner>
@@ -132,31 +160,43 @@
                         <v-text-field
                             v-model="Ombro"
                             label="Ombro"
+                            type="number"
+                            pattern="\d*"
                             prepend-icon="mdi-text-box-edit"
                         />
                         <v-text-field
                             v-model="Peito"
                             label="Peito"
+                            type="number"
+                            pattern="\d*"
                             prepend-icon="mdi-text-box-edit"
                         />
                         <v-text-field
                             v-model="BracoDireito"
                             label="Braço Direito"
+                            type="number"
+                            pattern="\d*"
                             prepend-icon="mdi-text-box-edit"
                         />
                         <v-text-field
                             v-model="BracoEsquerdo"
                             label="Braço Esquerdo"
+                            type="number"
+                            pattern="\d*"
                             prepend-icon="mdi-text-box-edit"
                         />
                         <v-text-field
                             v-model="Cintura"
                             label="Cintura"
+                            type="number"
+                            pattern="\d*"
                             prepend-icon="mdi-text-box-edit"
                         />
                         <v-text-field
                             v-model="Abdomem"
                             label="Abdomem"
+                            type="number"
+                            pattern="\d*"
                             prepend-icon="mdi-text-box-edit"
                         />
                     </v-banner>
@@ -169,26 +209,36 @@
                         <v-text-field
                             v-model="PernasInferiores"
                             label="Pernas++"
+                            type="number"
+                            pattern="\d*"
                             prepend-icon="mdi-text-box-edit"
                         />
                         <v-text-field
                             v-model="PernaDireita"
                             label="Perna Direita"
+                            type="number"
+                            pattern="\d*"
                             prepend-icon="mdi-text-box-edit"
                         />
                         <v-text-field
                             v-model="PernaEsquerda"
                             label="Perna Esquerda"
+                            type="number"
+                            pattern="\d*"
                             prepend-icon="mdi-text-box-edit"
                         />
                         <v-text-field
                             v-model="PanturilhaDireita"
                             label="Panturilha Direita"
+                            type="number"
+                            pattern="\d*"
                             prepend-icon="mdi-text-box-edit"
                         />
                         <v-text-field
                             v-model="PanturilhaEsquerda"
                             label="Panturilha Esquerda"
+                            type="number"
+                            pattern="\d*"
                             prepend-icon="mdi-text-box-edit"
                         />
                     </v-banner>
@@ -224,7 +274,7 @@ export default {
     components: { AlertComponent, LoadComponent, DialogPersistentComponent, DataPickersComponent },
     name: 'CreateAvaliacaoComponent',
     mixins: [GenericMethods, RequestMethods],
-    data: () => ({
+    data: (vm) => ({
         localDialog: false,
 
         Id: null,
@@ -232,7 +282,7 @@ export default {
         Descricao: null,
         TreinoKcal: null,
         Cardio: null,
-        DataAvaliacaoEnvio: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substring(0, 10),
+        DataAvaliacaoEnvio: vm.dateNow,
         DataAvaliacaoRetorno: null,
         Peso: null,
         MassaMuscular: null,

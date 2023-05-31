@@ -12,9 +12,14 @@ export default {
         sortDesc: true,
         flagAutoComplete: false,
         dados: null,
+        dateNow: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substring(0, 10),
         required: {
             required: value => !!value || 'Campo Obrigatório.',
         },
+        listStatus: [
+            'Todos', 'Ativos', 'Inativos'
+        ],
+        Status: 'Todos'
     }),
 
     methods: {
@@ -56,6 +61,26 @@ export default {
 
             const [day, month, year] = date.split('/')
             return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+        },
+
+        FormatDate(date) {
+            if (!date) return null
+
+            if (date.includes('T'))
+                date = date.substr(0, date.indexOf('T'))
+
+            const [year, month, day] = date.split('-')
+            return `${day}/${month}/${year}`
+        },
+
+        FiltrarStatus(filtro, retorno) {
+            debugger
+            if (filtro == 'Todos') 
+                return retorno
+            else if (filtro == 'Ativos')
+                return retorno.filter((x) => x.Ativo == 'Sim')
+            else if (filtro == 'Inativos')
+                return retorno.filter((x) => x.Ativo == 'Não')
         },
     },
 }

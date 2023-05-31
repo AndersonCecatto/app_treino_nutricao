@@ -42,8 +42,10 @@
   </template>
   
   <script>
+import GenericMethods from '@/mixins/GenericMethods'
   export default {
       name: 'DataPIckersComponente',
+      mixins: [GenericMethods],
       data: (vm) => ({
         date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substring(0, 10),
         dateFormatted: vm.FormatDate((new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substring(0, 10)),
@@ -51,16 +53,6 @@
       }),
 
       methods: {
-        FormatDate(date) {
-            if (!date) return null
-
-            if (date.includes('T'))
-                date = date.substr(0, date.indexOf('T'))
-
-            const [year, month, day] = date.split('-')
-            return `${day}/${month}/${year}`
-        },
-
         SalvarData(dateFormatted) {
             this.$emit('DataRetorno', this.dateFormatted)
         }

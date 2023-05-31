@@ -84,7 +84,7 @@ export default {
         BuscarAvaliacaoUsuario() {
             this.loader = !this.loader;
             
-            this.RequestGet('Usuario/GetByEmpresaId/2/TipoBusca/1',
+            this.RequestGet('Usuario/GetByEmpresaId/2/TipoBusca/2',
             (retorno) => {
                 this.usuariosAvaliacoes = []
                 retorno.data.forEach(element => {

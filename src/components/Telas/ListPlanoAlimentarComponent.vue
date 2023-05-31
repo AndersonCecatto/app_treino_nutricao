@@ -31,6 +31,27 @@
             </v-btn>
         </template>
         <template v-slot:texto>
+            <!-- Inicio Filtros -->
+            <v-expansion-panels>
+                <v-expansion-panel>
+                    <v-expansion-panel-header>
+                        <b>Filtros</b>
+                    </v-expansion-panel-header>
+                    <v-expansion-panel-content>
+                        <v-row>
+                            <v-col cols="12" md="4">
+                                <v-select
+                                    v-model="Status"
+                                    :items="listStatus"
+                                    label="Status"
+                                    @change="LocalFiltroStatus"
+                                ></v-select>
+                            </v-col>
+                        </v-row>
+                    </v-expansion-panel-content>
+                </v-expansion-panel>
+            </v-expansion-panels>
+            <!-- Fim Filtros -->
             <v-data-table
                 :headers="headers"
                 :items="planosAlimentares"
@@ -89,18 +110,23 @@ export default {
     mixins: [GenericMethods, RequestMethods],
     data: () => ({
         headers: [
-            { text: '', value: 'Id', align: ' d-none'},
             { text: '', value: 'Usuario', align: ' d-none'},
             { text: '', value: 'Alimentos', align: ' d-none'},
+            { text: 'Código', value: 'Id', align: 'center',  width: '10%'},
             { text: 'Descrição', value: 'Descricao'},
             { text: 'Alimentos', value: 'ListAlimentos'},
             { text: 'Ativo', value: 'Ativo', },
             { text: 'Ações', value: 'actions', align: 'right', sortable: false },
         ],
-        planosAlimentares: []
+        planosAlimentares: [],
+        todosPlanoAlimentares: []
     }),
 
     methods: {
+        LocalFiltroStatus(item) {
+            this.planosAlimentares = this.FiltrarStatus(item, this.todosPlanoAlimentares)
+        },
+
         BuscarPlanosAlimentares() {
             this.loader = !this.loader;
             
@@ -122,6 +148,9 @@ export default {
                         Usuario: element.usuario,
                         Ativo: this.RetornaSimNao(element.ativo)
                     })
+
+                    this.todosPlanoAlimentares = this.planosAlimentares
+                    this.Status = 'Todos'
                 });
             }, 
             (error) => this.RetornoErro(error),

@@ -31,6 +31,27 @@
                 </v-btn>
             </template>
             <template v-slot:texto>
+                <!-- Inicio Filtros -->
+                <v-expansion-panels>
+                    <v-expansion-panel>
+                        <v-expansion-panel-header>
+                            <b>Filtros</b>
+                        </v-expansion-panel-header>
+                        <v-expansion-panel-content>
+                            <v-row>
+                                <v-col cols="12" md="4">
+                                    <v-select
+                                        v-model="Status"
+                                        :items="listStatus"
+                                        label="Status"
+                                        @change="LocalFiltroStatus"
+                                    ></v-select>
+                                </v-col>
+                            </v-row>
+                        </v-expansion-panel-content>
+                    </v-expansion-panel>
+                </v-expansion-panels>
+                <!-- Fim Filtros -->
                 <v-data-table
                     :headers="headers"
                     :items="avaliacoes"
@@ -111,10 +132,15 @@ export default {
             { text: '', value: 'Observacoes', align: ' d-none'},
         ],
         avaliacoes: [],
+        todasAvaliacoes: [],
         dadosSimNao: null
     }),
 
     methods: {
+        LocalFiltroStatus(item) {
+            this.avaliacoes = this.FiltrarStatus(item, this.todasAvaliacoes)
+        },
+
         RetornoSimNao(retorno) {
             this.Deletar(retorno)
         },
@@ -131,6 +157,9 @@ export default {
                         Descricao: element.descricao,
                         Ativo: this.RetornaSimNao(element.ativo)
                     })
+
+                    this.todasAvaliacoes = this.avaliacoes
+                    this.Status = 'Todos'
                 });
             }, 
             (error) => this.RetornoErro(error),

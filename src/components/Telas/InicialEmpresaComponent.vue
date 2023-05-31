@@ -90,6 +90,7 @@
         <list-exercicios-component v-if="ListExerciciosComponent"/>
         <list-avaliacao-usuario-component v-if="ListAvaliacaoUsuarioComponent" @UsuarioId="UsuarioId"/>
         <list-avaliacao-component v-if="ListAvaliacaoComponent" :UsuarioId="LocalUsuarioId" :EmpresaId="2"/>
+        <list-usuario-component v-if="ListUsuarioComponent"/>
       </v-main>
       <load-component :Ativo="loader"/>
     </v-app>
@@ -105,6 +106,7 @@ import ListExerciciosComponent from './ListExerciciosComponent.vue';
 import ListPlanoAlimentarComponent from './ListPlanoAlimentarComponent.vue';
 import ListProjetoComponent from './ListProjetoComponent.vue';
 import ListTreinoComponent from './ListTreinoComponent.vue';
+import ListUsuarioComponent from './ListUsuarioComponent.vue';
 export default {
   components: { 
     LoadComponent, AnamneseComponent, 
@@ -112,7 +114,8 @@ export default {
     ListPlanoAlimentarComponent, ListAlimentosComponent, 
     ListExerciciosComponent,
     ListAvaliacaoComponent,
-    ListAvaliacaoUsuarioComponent },
+    ListAvaliacaoUsuarioComponent,
+    ListUsuarioComponent },
     name: "InicialEmpresaComponent",
     data: () => ({
         AnamneseComponent: false,
@@ -123,6 +126,7 @@ export default {
         ListExerciciosComponent: false,
         ListAvaliacaoComponent: false,
         ListAvaliacaoUsuarioComponent: false,
+        ListUsuarioComponent: false,
 
         LocalUsuarioId: 0,
         drawer: null,
@@ -166,6 +170,8 @@ export default {
                 this.ListAlimentosComponent = true
             else if (item.Id == 7)
                 this.ListAvaliacaoUsuarioComponent = true
+            else if (item.Id == 9)
+                this.ListUsuarioComponent = true
             else if (item.Id == 10)
                 this.AnamneseComponent = true;
         },
@@ -179,6 +185,7 @@ export default {
             this.ListExerciciosComponent = false
             this.ListAvaliacaoUsuarioComponent = false
             this.ListAvaliacaoComponent = false
+            this.ListUsuarioComponent = false
         },
 
         Sair() {
