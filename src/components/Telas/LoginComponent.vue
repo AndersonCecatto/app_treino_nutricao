@@ -104,7 +104,7 @@ export default {
             // Alert('Teste')
             this.loader = false;
 
-            this.$router.push({ path: '/inicial', name: 'inicial'})
+            this.$router.push({ path: '/principal', name: 'principal'})
         }
     }
 }

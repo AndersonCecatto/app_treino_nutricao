@@ -1,18 +1,16 @@
 <template>
     <v-app>
         <v-main>
-            <inicial-empresa-component/>
+            <inicial-aluno-component/>
         </v-main>
     </v-app>
 </template>
 
 <script>
-
-import InicialEmpresaComponent from '@/components/Telas/InicialEmpresaComponent.vue'
-
+import InicialAlunoComponent from '@/components/TelasAluno/InicialAlunoComponent.vue'
 export default {
-  components: { InicialEmpresaComponent },
-    name: "InicialEmpresaView"
+  components: { InicialAlunoComponent },
+    name: 'InicialAlunoView'
 }
 </script>
 

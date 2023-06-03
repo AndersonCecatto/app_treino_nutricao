@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import LoginView from "../views/Telas/LoginView.vue";
 import IncialEmpresaView from "../views/Telas/InicialEmpresaView.vue";
+import InicialAlunoView from "../views/Telas/InicialAlunoView.vue";
 
 Vue.use(VueRouter)
 
@@ -10,6 +11,11 @@ const routes = [
     path: '/inicial',
     name: 'inicial',
     component: IncialEmpresaView
+  },
+  {
+    path: '/principal',
+    name: 'principal',
+    component: InicialAlunoView
   },
   {
     path: '/',
