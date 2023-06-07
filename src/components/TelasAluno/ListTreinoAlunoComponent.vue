@@ -40,10 +40,18 @@
                                 {{ item.Descricao }}
                             </v-card-title>
                             <v-card-text>
-                                <v-icon class="mx-3">
-                                    mdi-arrow-right-bold
-                                </v-icon>
-                                {{ item.Observacoes }}
+                                <v-row>
+                                    <v-icon class="mx-3">
+                                        mdi-arrow-right-bold
+                                    </v-icon>
+                                    {{ item.Observacoes }}
+                                </v-row>
+                                <v-row
+                                    v-for="exercicio in item.ListaExercicios"
+                                    :key="exercicio.Id"
+                                >
+                                    {{ exercicio.Descricao }}
+                                </v-row>
                             </v-card-text>
                         </v-card>
                     </v-col>
@@ -88,13 +96,53 @@ export default {
                         Descricao: element.descricao,
                         GrupoMuscular: element.grupoMuscular,
                         Exercicios: element.exercicios,
-                        Observacoes: element.observacoes
+                        Observacoes: element.observacoes,
+                        ListaExercicios: [],
+                        ListaGrupoMuscular: []
                     })
+
+                    var listaExercicios = []
+                    var listaGrupoMuscular = []
+
+                    element.exercicios.split(';').forEach(element => {
+                        listaExercicios.push(parseInt(element.substring(0, element.indexOf('-')).trim()))
+                    });
+
+                    element.grupoMuscular.split(';').forEach(element => {
+                        listaGrupoMuscular.push(parseInt(element.substring(0, element.indexOf('-')).trim()))
+                    });
+
+                    if (listaExercicios.length > 0) {
+                        this.BuscarExercicios(listaExercicios, element.id)
+                    } 
                 });
             }, 
             (error) => this.RetornoErro(error),
             () => (this.loader = !this.loader))
-        }
+        },
+
+        BuscarExercicios(listaExercicios, treinoId) {
+            this.loader = !this.loader;
+            
+            this.RequestPost('Exercicio/BuscarPorIdsExercicios', listaExercicios,
+            (retorno) => {
+                
+                var treino = this.treinos.find((x) => x.Id == treinoId)
+                    
+                var exercicios = []
+                
+                retorno.data.forEach(element => {
+                    exercicios.push({
+                        Id: element.id,
+                        Descricao: element.descricao
+                    })
+                });
+                    
+                treino.ListaExercicios = exercicios
+            }, 
+            (error) => this.RetornoErro(error),
+            () => (this.loader = !this.loader))
+        },
     },
 
     created() {

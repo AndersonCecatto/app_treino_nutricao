@@ -43,13 +43,17 @@
                                     <v-icon class="mx-3">
                                         mdi-arrow-right-bold-box
                                     </v-icon>
-                                    {{ item.nome }}
+                                    <b style="color: black;">
+                                        {{ item.nome }}
+                                    </b>
                                 </v-card-title>
                                 <v-card-text>
                                     <v-icon class="mx-3">
                                         mdi-arrow-right-bold
                                     </v-icon>
-                                    {{ item.descricao }}
+                                        <b style="color: black;">
+                                            {{ item.descricao }}
+                                        </b>
                                 </v-card-text>
                             </v-card>
                         </v-hover>

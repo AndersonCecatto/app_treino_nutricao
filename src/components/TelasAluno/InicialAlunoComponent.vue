@@ -84,6 +84,7 @@
       <v-main>
         <anamnese-component v-if="AnamneseComponent"/>
         <list-treino-aluno-component v-if="ListTreinoAlunoComponent" :dados="retornoProjetos" @VoltarTreino="VoltarTreino"/>
+        <list-plano-alimentar-aluno-component v-if="ListPlanoAlimentarAlunoComponent" @VoltarPlanoAlimentar="VoltarPlanoAlimentar" :dados="retornoProjetos"/>
         <list-projeto-aluno-component v-if="ListProjetoAlunoComponent" @Projeto="RetornoProjetos" :dados="retornoProjetos" />
         <list-resumo-projeto-aluno-component v-if="ListResumoProjetoAlunoComponent" :dados="retornoProjetos" @Resumo="RetornoResumo" @VoltarResumo="VoltarResumo"/>
       </v-main>
@@ -99,8 +100,14 @@ import ListTreinoAlunoComponent from './ListTreinoAlunoComponent.vue';
 import RequestMethods from '@/mixins/RequestMethods';
 import ListProjetoAlunoComponent from './ListProjetoAlunoComponent.vue';
 import ListResumoProjetoAlunoComponent from './ListResumoProjetoAlunoComponent.vue';
+import ListPlanoAlimentarAlunoComponent from './ListPlanoAlimentarAlunoComponent.vue';
 export default {
-    components: { LoadComponent, AnamneseComponent, ListTreinoAlunoComponent, ListProjetoAlunoComponent, ListResumoProjetoAlunoComponent },
+    components: { 
+        LoadComponent, 
+        AnamneseComponent, 
+        ListTreinoAlunoComponent, 
+        ListProjetoAlunoComponent, ListResumoProjetoAlunoComponent, 
+        ListPlanoAlimentarAlunoComponent },
     name: 'InicialAlunoComponent',
     mixins: [GenericMethods, RequestMethods],
     data: () => ({
@@ -108,6 +115,7 @@ export default {
         ListTreinoAlunoComponent: false,
         ListProjetoAlunoComponent: false,
         ListResumoProjetoAlunoComponent: false,
+        ListPlanoAlimentarAlunoComponent: false,
 
         drawer: null,
         list: null,
@@ -155,6 +163,8 @@ export default {
                 this.ListProjetoAlunoComponent = true;
             else if (item.Id == 3)
                 this.ListTreinoAlunoComponent = true;
+            else if (item.Id == 5)
+                this.ListPlanoAlimentarAlunoComponent = true;
         },
 
         DesabilitarComponentes() {
@@ -162,6 +172,7 @@ export default {
             this.ListTreinoAlunoComponent = false;
             this.ListProjetoAlunoComponent = false;
             this.ListResumoProjetoAlunoComponent = false
+            this.ListPlanoAlimentarAlunoComponent = false
         },
 
         RetornoProjetos(retorno) {
@@ -181,10 +192,16 @@ export default {
             this.ListResumoProjetoAlunoComponent = true
         },
 
-        RetornoResumo(retorno) {
-            
-            if (retorno.item.nome == "Planos Alimentares") {
+        VoltarPlanoAlimentar(retorno) {
+            debugger
+            this.ListPlanoAlimentarAlunoComponent = false
+            this.ListResumoProjetoAlunoComponent = true
+        },
 
+        RetornoResumo(retorno) {
+            if (retorno.item.nome == "Planos Alimentares") {
+                this.ListResumoProjetoAlunoComponent = false
+                this.ListPlanoAlimentarAlunoComponent = true
             }
 
             if (retorno.item.nome == "Treinos") {

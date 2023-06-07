@@ -36,7 +36,9 @@
                                     <v-icon class="mx-3">
                                         mdi-arrow-right-bold
                                     </v-icon>
-                                    {{ item.Projeto.observacoes }}
+                                        <b style="color: black;">
+                                            {{ item.Projeto.observacoes }}
+                                        </b>
                                 </v-card-text>
                             </v-card>
                         </v-hover>
